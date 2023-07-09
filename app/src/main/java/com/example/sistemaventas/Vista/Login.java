@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
             });
 
             if (cl != null){
-                Intent intent = new Intent(Login.this, MainActivity.class);
+                Intent intent = new Intent(Login.this, Tabla.class);
                 intent.putExtra("token", token);
                 startActivity(intent);
             } else {

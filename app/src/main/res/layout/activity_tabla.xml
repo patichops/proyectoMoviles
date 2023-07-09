@@ -1,32 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Vista.Tabla">
+    android:orientation="vertical">
 
-    <!-- TabLayout -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+    <!-- Otros elementos de diseño -->
+    <TextView
+        android:id="@+id/title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabGravity="fill"
-        app:tabMode="fixed" />
+        android:padding="16dp"
+        android:text="Tabla de clientes"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-    <!-- ViewPager -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <TextView
+        android:id="@+id/text_nombre"
+        android:layout_width="88dp"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        android:text="EJEMPLO"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/text_apellido"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/text_telefono"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

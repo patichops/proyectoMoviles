@@ -2,12 +2,7 @@ package com.example.sistemaventas.Modelo;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
-import com.example.sistemaventas.Vista.Login;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +19,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ApiHandler {
-
 
     //Listener para post
     public interface OnPostDataListener {
