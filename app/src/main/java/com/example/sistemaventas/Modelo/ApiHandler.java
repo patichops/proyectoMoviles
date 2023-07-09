@@ -3,6 +3,7 @@ package com.example.sistemaventas.Modelo;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
+import com.example.sistemaventas.Modelo.Entidades.Factura;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,7 @@ public class ApiHandler {
     }
 
     //GET-S
+    //Clientes
     public static String getClientes(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -157,6 +159,7 @@ public class ApiHandler {
         }
     }
 
+    //Productos
     public static String GetProductos(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -214,7 +217,6 @@ public class ApiHandler {
             return personList;
         }
     }
-
 
     public static String GetProductosActivos(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
@@ -274,6 +276,7 @@ public class ApiHandler {
         }
     }
 
+    //Facturas
     public static String GetFacturas(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -290,12 +293,12 @@ public class ApiHandler {
 
         return response.toString();
     }
-    public static class GetFacturasTask extends AsyncTask<String, Void, List<Cliente>> {
+    public static class GetFacturasTask extends AsyncTask<String, Void, List<Factura>> {
 
-        List<Cliente> personList = new ArrayList<>();
+        List<Factura> personList = new ArrayList<>();
 
         @Override
-        public List<Cliente> doInBackground(String... urls) {
+        public List<Factura> doInBackground(String... urls) {
             String apiUrl = urls[0];
 
             try {
@@ -306,22 +309,15 @@ public class ApiHandler {
                 for (int i = 0; i < dataArray.length(); i++) {
                     JSONObject jsonObject = dataArray.getJSONObject(i);
 
+                    int idVenta = Integer.parseInt(jsonObject.getString("idVenta"));
+                    String cliente = jsonObject.getString("cliente");
+                    double total = Double.parseDouble(jsonObject.getString("total"));
+                    String fechaRegistro = jsonObject.getString("fechaRegistro");
 
-                    String contrasenia = jsonObject.getString("contraseña");
-                    String telefono  = jsonObject.getString("telefono");
-                    String apellido = jsonObject.getString("apellido");
-                    String nombre = jsonObject.getString("nombre");
-                    String direccion = jsonObject.getString("direccion");
-                    boolean activo = Boolean.parseBoolean(jsonObject.getString("activo"));
-                    String cedula = jsonObject.getString("cedula");
-                    String correo = jsonObject.getString("correo");
-                    int codigoCliente = Integer.parseInt(jsonObject.getString("codigoCliente"));
-                    String rol = jsonObject.getString("rol");
-
-                    Cliente cl = new Cliente(
-                            codigoCliente,nombre, apellido, activo,
-                            direccion, telefono, cedula, rol,
-                            correo, contrasenia);
+                    Factura cl = new Factura(
+                            idVenta, "EJEMPLO", "EJEMPLO",
+                            "EJEMPLO", cliente, total,
+                            fechaRegistro);
                     personList.add(cl);
                 }
 
@@ -348,12 +344,12 @@ public class ApiHandler {
 
         return response.toString();
     }
-    public static class GetFacturasIDTask extends AsyncTask<String, Void, List<Cliente>> {
+    public static class GetFacturasIDTask extends AsyncTask<String, Void, List<Factura>> {
 
-        List<Cliente> personList = new ArrayList<>();
+        List<Factura> personList = new ArrayList<>();
 
         @Override
-        public List<Cliente> doInBackground(String... urls) {
+        public List<Factura> doInBackground(String... urls) {
             String apiUrl = urls[0];
 
             try {
@@ -365,21 +361,18 @@ public class ApiHandler {
                     JSONObject jsonObject = dataArray.getJSONObject(i);
 
 
-                    String contrasenia = jsonObject.getString("contraseña");
-                    String telefono  = jsonObject.getString("telefono");
-                    String apellido = jsonObject.getString("apellido");
-                    String nombre = jsonObject.getString("nombre");
-                    String direccion = jsonObject.getString("direccion");
-                    boolean activo = Boolean.parseBoolean(jsonObject.getString("activo"));
-                    String cedula = jsonObject.getString("cedula");
-                    String correo = jsonObject.getString("correo");
-                    int codigoCliente = Integer.parseInt(jsonObject.getString("codigoCliente"));
-                    String rol = jsonObject.getString("rol");
+                    int idVenta = Integer.parseInt(jsonObject.getString("idVenta"));
+                    String cedula  = jsonObject.getString("numeroDocumento");
+                    String direccion = jsonObject.getString("tipoPago");
+                    String telefono = jsonObject.getString("nombre");
+                    String cliente = jsonObject.getString("cliente");
+                    double total = Double.parseDouble(jsonObject.getString("total"));
+                    String fechaRegistro = jsonObject.getString("fechaRegistro");
 
-                    Cliente cl = new Cliente(
-                            codigoCliente,nombre, apellido, activo,
-                            direccion, telefono, cedula, rol,
-                            correo, contrasenia);
+                    Factura cl = new Factura(
+                            idVenta, cedula, direccion,
+                            telefono, cliente, total,
+                            fechaRegistro);
                     personList.add(cl);
                 }
 

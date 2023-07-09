@@ -68,6 +68,7 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this.getBaseContext(),"Login Incorrecto", Toast.LENGTH_SHORT).show();
                         } else {
                             token = responseJson.getString("message");
+                            token = token.replace("token: ", "");
                         }
 
                     } catch (Exception e){
@@ -82,7 +83,7 @@ public class Login extends AppCompatActivity {
             });
 
             if (cl != null){
-                Intent intent = new Intent(Login.this, Tabla.class);
+                Intent intent = new Intent(Login.this, Ventas.class);
                 intent.putExtra("token", token);
                 startActivity(intent);
             } else {

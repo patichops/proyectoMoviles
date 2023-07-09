@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         texto = findViewById(R.id.textEjemplo);
 
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
+//        texto.setText(intent.getExtras().get("token").toString());
 
-        texto.setText(intent.getExtras().get("token").toString());
 /*        //GET
 //        List<Cliente> res = null;
 //        try {
