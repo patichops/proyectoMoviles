@@ -14,7 +14,6 @@ import com.example.sistemaventas.Modelo.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
 import com.example.sistemaventas.R;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -23,11 +22,15 @@ public class Ventas extends AppCompatActivity {
     String url = "http://www.sistemaventasepe.somee.com/api/";
     private TableLayout tablaVentas;
     private List<Factura> listaVentas;
+    private Intent intentVentas;
+    private Button buttonProductos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas);
+        buttonProductos = findViewById(R.id.buttonProductos);
+        intentVentas = this.getIntent();
 
         listaVentas = llenarDatos();
         tablaVentas = findViewById(R.id.tableLayoutVentas);
@@ -67,12 +70,28 @@ public class Ventas extends AppCompatActivity {
             tablaVentas.addView(tableRow);
         }
 
-
+        buttonProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mirarProductos();
+            }
+        });
     }
 
     public void mirarFactura(){
         Intent intent = new Intent(this, MainActivity.class);
+        String token = "";
+        intent.putExtra("token",token);
         startActivity(intent);
+        this.finish();
+    }
+
+    public void mirarProductos(){
+        Intent intent = new Intent(this, Productos.class);
+        String token = "";
+        intent.putExtra("token",token);
+        startActivity(intent);
+        this.finish();
     }
 
     public List<Factura> llenarDatos(){
