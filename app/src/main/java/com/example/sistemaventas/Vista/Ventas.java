@@ -79,7 +79,7 @@ public class Ventas extends AppCompatActivity {
     }
 
     public void mirarFactura(){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, RealizarVenta.class);
         String token = "";
         intent.putExtra("token",token);
         startActivity(intent);
