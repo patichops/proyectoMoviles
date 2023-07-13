@@ -2,6 +2,7 @@ package com.example.sistemaventas.Modelo;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
 import com.example.sistemaventas.Modelo.Entidades.Producto;
@@ -26,18 +27,21 @@ public class ApiHandler {
     //Listener para post
     public interface OnPostDataListener {
         void onPostDataSuccess(String response);
+
         void onPostDataError(IOException e);
     }
 
     //Listener para delete
     public interface OnDeleteDataListener {
         void onDeleteDataSuccess(String response);
+
         void onDeleteDataError(IOException e);
     }
 
     //Listener para PUT
     public interface OnUpdateDataListener {
         void onUpdateDataSuccess(String response);
+
         void onUpdateDataError(IOException e);
     }
 
@@ -78,7 +82,7 @@ public class ApiHandler {
                     JSONObject jsonObject = dataArray.getJSONObject(i);
 
                     String contrasenia = jsonObject.getString("contraseña");
-                    String telefono  = jsonObject.getString("telefono");
+                    String telefono = jsonObject.getString("telefono");
                     String apellido = jsonObject.getString("apellido");
                     String nombre = jsonObject.getString("nombre");
                     String direccion = jsonObject.getString("direccion");
@@ -89,7 +93,7 @@ public class ApiHandler {
                     String rol = jsonObject.getString("rol");
 
                     Cliente cl = new Cliente(
-                            codigoCliente,nombre, apellido, activo,
+                            codigoCliente, nombre, apellido, activo,
                             direccion, telefono, cedula, rol,
                             correo, contrasenia);
                     personList.add(cl);
@@ -102,6 +106,42 @@ public class ApiHandler {
         }
     }
 
+    public static class getClientesPorID extends AsyncTask<String, Void, Cliente> {
+
+        Cliente personList;
+
+        @Override
+        public Cliente doInBackground(String... urls) {
+            String apiUrl = urls[0];
+
+            try {
+                String jsonString = ApiHandler.getClientesActivos(apiUrl);
+                JSONObject responseJson = new JSONObject(jsonString);
+                JSONObject data = responseJson.getJSONObject("data");
+
+                String contrasenia = data.getString("contraseña");
+                String telefono = data.getString("telefono");
+                String apellido = data.getString("apellido");
+                String nombre = data.getString("nombre");
+                String direccion = data.getString("direccion");
+                boolean activo = Boolean.parseBoolean(data.getString("activo"));
+                String cedula = data.getString("cedula");
+                String correo = data.getString("correo");
+                int codigoCliente = Integer.parseInt(data.getString("codigoCliente"));
+                String rol = data.getString("rol");
+
+                Cliente cl = new Cliente(
+                        codigoCliente, nombre, apellido, activo,
+                        direccion, telefono, cedula, rol,
+                        correo, contrasenia);
+                personList = cl;
+
+            } catch (IOException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return personList;
+        }
+    }
 
     public static String getClientesActivos(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
@@ -119,6 +159,7 @@ public class ApiHandler {
 
         return response.toString();
     }
+
     public static class getClientesActivosTask extends AsyncTask<String, Void, List<Cliente>> {
 
         List<Cliente> personList = new ArrayList<>();
@@ -137,7 +178,7 @@ public class ApiHandler {
 
 
                     String contrasenia = jsonObject.getString("contraseña");
-                    String telefono  = jsonObject.getString("telefono");
+                    String telefono = jsonObject.getString("telefono");
                     String apellido = jsonObject.getString("apellido");
                     String nombre = jsonObject.getString("nombre");
                     String direccion = jsonObject.getString("direccion");
@@ -148,7 +189,7 @@ public class ApiHandler {
                     String rol = jsonObject.getString("rol");
 
                     Cliente cl = new Cliente(
-                            codigoCliente,nombre, apellido, activo,
+                            codigoCliente, nombre, apellido, activo,
                             direccion, telefono, cedula, rol,
                             correo, contrasenia);
                     personList.add(cl);
@@ -178,6 +219,7 @@ public class ApiHandler {
 
         return response.toString();
     }
+
     public static class GetProductosTask extends AsyncTask<String, Void, List<Producto>> {
 
         List<Producto> personList = new ArrayList<>();
@@ -202,7 +244,7 @@ public class ApiHandler {
                     String fechaActivo = jsonObject.getString("fechaRegistro");
 
                     Producto cl = new Producto(
-                        stock, idProducto, nombre, precio, esActivo, fechaActivo
+                            stock, idProducto, nombre, precio, esActivo, fechaActivo
                     );
                     personList.add(cl);
                 }
@@ -230,6 +272,7 @@ public class ApiHandler {
 
         return response.toString();
     }
+
     public static class GetProductosActivosTask extends AsyncTask<String, Void, List<Cliente>> {
 
         List<Cliente> personList = new ArrayList<>();
@@ -248,7 +291,7 @@ public class ApiHandler {
 
 
                     String contrasenia = jsonObject.getString("contraseña");
-                    String telefono  = jsonObject.getString("telefono");
+                    String telefono = jsonObject.getString("telefono");
                     String apellido = jsonObject.getString("apellido");
                     String nombre = jsonObject.getString("nombre");
                     String direccion = jsonObject.getString("direccion");
@@ -259,7 +302,7 @@ public class ApiHandler {
                     String rol = jsonObject.getString("rol");
 
                     Cliente cl = new Cliente(
-                            codigoCliente,nombre, apellido, activo,
+                            codigoCliente, nombre, apellido, activo,
                             direccion, telefono, cedula, rol,
                             correo, contrasenia);
                     personList.add(cl);
@@ -289,6 +332,7 @@ public class ApiHandler {
 
         return response.toString();
     }
+
     public static class GetFacturasTask extends AsyncTask<String, Void, List<Factura>> {
 
         List<Factura> personList = new ArrayList<>();
@@ -340,6 +384,7 @@ public class ApiHandler {
 
         return response.toString();
     }
+
     public static class GetFacturasIDTask extends AsyncTask<String, Void, List<Factura>> {
 
         List<Factura> personList = new ArrayList<>();
@@ -358,7 +403,7 @@ public class ApiHandler {
 
 
                     int idVenta = Integer.parseInt(jsonObject.getString("idVenta"));
-                    String cedula  = jsonObject.getString("numeroDocumento");
+                    String cedula = jsonObject.getString("numeroDocumento");
                     String direccion = jsonObject.getString("tipoPago");
                     String telefono = jsonObject.getString("nombre");
                     String cliente = jsonObject.getString("cliente");
@@ -384,6 +429,7 @@ public class ApiHandler {
         new CrearDataTask(listener).execute(apiUrl, postData.toString());
         return apiUrl;
     }
+
     private static class CrearDataTask extends AsyncTask<String, Void, String> {
         private OnPostDataListener listener;
 
@@ -444,6 +490,7 @@ public class ApiHandler {
     public static void deleteAsync(String apiUrl, OnDeleteDataListener listener) {
         new DeleteTask(listener).execute(apiUrl);
     }
+
     private static class DeleteTask extends AsyncTask<String, Void, String> {
         private OnDeleteDataListener listener;
 
@@ -492,6 +539,7 @@ public class ApiHandler {
     public static void ActualizarAsync(String apiUrl, JSONObject updateData, OnUpdateDataListener listener) {
         new ActualizarTask(apiUrl, updateData, listener).execute();
     }
+
     private static class ActualizarTask extends AsyncTask<Void, Void, String> {
         private String apiUrl;
         private JSONObject updateData;
@@ -560,7 +608,7 @@ public class ApiHandler {
             for (int i = 0; i < dataArray.length(); i++) {
                 JSONObject jsonObject = dataArray.getJSONObject(i);
                 String contrasenia = jsonObject.getString("contraseña");
-                String telefono  = jsonObject.getString("telefono");
+                String telefono = jsonObject.getString("telefono");
                 String apellido = jsonObject.getString("apellido");
                 String nombre = jsonObject.getString("nombre");
                 String direccion = jsonObject.getString("direccion");
@@ -571,17 +619,18 @@ public class ApiHandler {
                 String rol = jsonObject.getString("rol");
 
                 cl = new Cliente(
-                        codigoCliente,nombre, apellido, activo,
+                        codigoCliente, nombre, apellido, activo,
                         direccion, telefono, cedula, rol,
                         correo, contrasenia);
             }
 
-        } catch (JSONException e){
-            Log.d("ERROR",e.toString());
+        } catch (JSONException e) {
+            Log.d("ERROR", e.toString());
         }
 
         return cl;
     }
+
     public static class LoginTask extends AsyncTask<String, Void, String> {
         private OnPostDataListener listener;
 

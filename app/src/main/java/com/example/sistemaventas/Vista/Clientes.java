@@ -63,27 +63,27 @@ public class Clientes extends AppCompatActivity {
             campo4.setText(String.valueOf(fac.telefono));
             tableRow.addView(campo4);
 
-            Button editarProducto = new Button(this);
-            editarProducto.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            editarProducto.setText("EDITAR");
-            editarProducto.setOnClickListener(new View.OnClickListener() {
+            Button editarCliente = new Button(this);
+            editarCliente.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            editarCliente.setText("EDITAR");
+            editarCliente.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editarCliente(fac.cedula);
+                    editarCliente(fac.codigoCliente);
                 }
             });
-            tableRow.addView(editarProducto);
+            tableRow.addView(editarCliente);
 
-            Button eliminarProducto = new Button(this);
-            eliminarProducto.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            eliminarProducto.setText("ELIMINAR");
-            eliminarProducto.setOnClickListener(new View.OnClickListener() {
+            Button eliminarCliente = new Button(this);
+            eliminarCliente.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            eliminarCliente.setText("ELIMINAR");
+            eliminarCliente.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     eliminarCliente(fac.cedula);
                 }
             });
-            tableRow.addView(eliminarProducto);
+            tableRow.addView(eliminarCliente);
 
             tablaClientes.addView(tableRow);
         }
@@ -121,8 +121,9 @@ public class Clientes extends AppCompatActivity {
             bd.show();
     }
 
-    public void editarCliente(String cedula){
-        Intent intent = new Intent(this, RealizarVenta.class);
+    public void editarCliente(int cedula){
+        Intent intent = new Intent(this, AccionesCliente.class);
+        intent.putExtra("codigo",cedula);
         startActivity(intent);
     }
 
