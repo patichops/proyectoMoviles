@@ -80,18 +80,16 @@ public class Ventas extends AppCompatActivity {
 
     public void mirarFactura(){
         Intent intent = new Intent(this, RealizarVenta.class);
-        String token = "";
-        intent.putExtra("token",token);
+        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
         startActivity(intent);
-        this.finish();
     }
 
     public void mirarProductos(){
         Intent intent = new Intent(this, Productos.class);
-        String token = "";
-        intent.putExtra("token",token);
+        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
         startActivity(intent);
-        this.finish();
     }
 
     public List<Factura> llenarDatos(){

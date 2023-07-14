@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class Login extends AppCompatActivity {
 
     String url = "http://www.sistemaventasepe.somee.com/api/";
-    private TextView resetContra;
+    private TextView registrarse;
     private EditText cedula;
     private EditText clave;
     private Button login;
@@ -34,10 +34,10 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        resetContra = findViewById(R.id.tv_forgot_password);
         cedula = findViewById(R.id.et_cedula_login);
         clave = findViewById(R.id.et_contraseña_login);
         login = findViewById(R.id.btn_login);
+        registrarse = findViewById(R.id.tv_register);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +45,18 @@ public class Login extends AppCompatActivity {
                 InvocarServicio();
             }
         });
+
+        registrarse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrar();
+            }
+        });
+    }
+
+    private void registrar() {
+        Intent intent = new Intent(this, AccionesCliente.class);
+        startActivity(intent);
     }
 
     public void InvocarServicio(){
@@ -85,6 +97,8 @@ public class Login extends AppCompatActivity {
             if (cl != null){
                 Intent intent = new Intent(Login.this, Ventas.class);
                 intent.putExtra("token", token);
+                intent.putExtra("codCliente", cl.codigoCliente);
+                intent.putExtra("rol", cl.rol);
                 startActivity(intent);
             } else {
                 Toast.makeText(Login.this.getBaseContext(),"Error: Inicio de sesión no valido", Toast.LENGTH_SHORT).show();

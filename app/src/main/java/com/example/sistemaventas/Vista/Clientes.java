@@ -27,14 +27,15 @@ public class Clientes extends AppCompatActivity {
     private TableLayout tablaClientes;
     private List<Cliente> listaClientes;
     private Intent intentCliente;
+    private Button regresar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_productos);
+        setContentView(R.layout.activity_clientes);
         intentCliente = this.getIntent();
         listaClientes = llenarDatos();
-        tablaClientes = findViewById(R.id.tableLayoutProductos);
+        tablaClientes = findViewById(R.id.tableLayoutClientes);
 
         for (Cliente fac : listaClientes) {
             TableRow tableRow = new TableRow(this);
@@ -80,16 +81,32 @@ public class Clientes extends AppCompatActivity {
             eliminarCliente.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    eliminarCliente(fac.cedula);
+                    eliminarCliente(fac.codigoCliente);
                 }
             });
             tableRow.addView(eliminarCliente);
 
             tablaClientes.addView(tableRow);
+
+            regresar = findViewById(R.id.buttonProductos);
+            regresar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    voler();
+                }
+            });
         }
     }
 
-    public void eliminarCliente(String cedula){
+    private void voler() {
+        Intent intent = new Intent(this, Productos.class);
+        intent.putExtra("codCliente",
+                Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
+        startActivity(intent);
+    }
+
+    public void eliminarCliente(int codigo){
             AlertDialog.Builder bd = new AlertDialog.Builder(this);
             bd
                     .setMessage("¿Está seguro que desea eliminar el cliente?")
@@ -102,11 +119,14 @@ public class Clientes extends AppCompatActivity {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ApiHandler.deleteAsync(url + cedula, new ApiHandler.OnDeleteDataListener() {
+                    ApiHandler.deleteAsync(url + "Clientes/" + codigo, new ApiHandler.OnDeleteDataListener() {
                         @Override
                         public void onDeleteDataSuccess(String response) {
                             Toast.makeText(Clientes.this,"Dato eliminado exitoso.",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(Clientes.this, Clientes.class);
+                            intent.putExtra("codCliente",
+                                    Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
+                            intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
                             startActivity(intent);
                         }
 
@@ -123,6 +143,9 @@ public class Clientes extends AppCompatActivity {
 
     public void editarCliente(int cedula){
         Intent intent = new Intent(this, AccionesCliente.class);
+        intent.putExtra("codCliente",
+                Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
         intent.putExtra("codigo",cedula);
         startActivity(intent);
     }
@@ -130,8 +153,14 @@ public class Clientes extends AppCompatActivity {
     public List<Cliente> llenarDatos(){
         List<Cliente> resp;
         try {
-            resp = new ApiHandler.getClientesTask().execute(url + "Clientes").get();
-            return resp;
+            if (intentCliente.getExtras().get("rol").toString().equals("admin")) {
+                resp = new ApiHandler.getClientesTask().execute(url + "Clientes").get();
+                return resp;
+            } else {
+                resp = new ApiHandler.getClientesActivosTask().execute(url + "Clientes/ACTIVOS").get();
+                return resp;
+            }
+
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

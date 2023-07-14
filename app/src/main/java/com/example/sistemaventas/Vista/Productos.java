@@ -126,6 +126,9 @@ public class Productos extends AppCompatActivity {
                             public void onDeleteDataSuccess(String response) {
                                 Toast.makeText(Productos.this,"Dato eliminado exitosamente.",Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(Productos.this, Productos.class);
+                                intent.putExtra("codCliente",
+                                        Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
                                 startActivity(intent);
                             }
 
@@ -138,16 +141,21 @@ public class Productos extends AppCompatActivity {
                 });
         bd.create();
         bd.show();
-
     }
 
     public void editarProducto(int id){
         Intent intent = new Intent(this, RealizarVenta.class);
+        intent.putExtra("codCliente",
+                Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
         startActivity(intent);
     }
 
     public void verClientes(){
         Intent intent = new Intent(this, Clientes.class);
+        intent.putExtra("codCliente",
+                Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
         startActivity(intent);
     }
 }
