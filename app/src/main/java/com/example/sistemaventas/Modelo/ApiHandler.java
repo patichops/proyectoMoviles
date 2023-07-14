@@ -6,7 +6,6 @@ import android.util.Log;
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
 import com.example.sistemaventas.Modelo.Entidades.Producto;
-import com.example.sistemaventas.Vista.Productos;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -220,6 +219,41 @@ public class ApiHandler {
         return response.toString();
     }
 
+    public static class getProductoPorID extends AsyncTask<String, Void, Producto> {
+
+        Producto producto;
+
+        @Override
+        public Producto doInBackground(String... urls) {
+            String apiUrl = urls[0];
+
+            try {
+                String jsonString = ApiHandler.getClientesActivos(apiUrl);
+                JSONObject responseJson = new JSONObject(jsonString);
+                JSONObject data = responseJson.getJSONObject("data");
+
+                int stock = Integer.parseInt(data.getString("stock"));
+                int idProducto = Integer.parseInt(data.getString("idProducto"));
+                String nombre = data.getString("nombre");
+                double precio = Double.parseDouble(data.getString("precio"));
+                boolean esActivo = Boolean.parseBoolean(data.getString("esActivo"));
+                String fechaActivo = data.getString("fechaRegistro");
+
+                Producto p = new Producto(stock, idProducto, nombre, precio, esActivo, fechaActivo);
+                producto = p;
+
+            } catch (IOException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return producto;
+        }
+
+        @Override
+        protected void onPostExecute(Producto producto) {
+            super.onPostExecute(producto);
+        }
+    }
+
     public static class GetProductosTask extends AsyncTask<String, Void, List<Producto>> {
 
         List<Producto> personList = new ArrayList<>();
@@ -273,12 +307,12 @@ public class ApiHandler {
         return response.toString();
     }
 
-    public static class GetProductosActivosTask extends AsyncTask<String, Void, List<Cliente>> {
+    public static class GetProductosActivosTask extends AsyncTask<String, Void, List<Producto>> {
 
-        List<Cliente> personList = new ArrayList<>();
+        List<Producto> personList = new ArrayList<>();
 
         @Override
-        public List<Cliente> doInBackground(String... urls) {
+        public List<Producto> doInBackground(String... urls) {
             String apiUrl = urls[0];
 
             try {
@@ -289,22 +323,16 @@ public class ApiHandler {
                 for (int i = 0; i < dataArray.length(); i++) {
                     JSONObject jsonObject = dataArray.getJSONObject(i);
 
-
-                    String contrasenia = jsonObject.getString("contraseña");
-                    String telefono = jsonObject.getString("telefono");
-                    String apellido = jsonObject.getString("apellido");
+                    int stock = Integer.parseInt(jsonObject.getString("stock"));
+                    int idProducto = Integer.parseInt(jsonObject.getString("idProducto"));
                     String nombre = jsonObject.getString("nombre");
-                    String direccion = jsonObject.getString("direccion");
-                    boolean activo = Boolean.parseBoolean(jsonObject.getString("activo"));
-                    String cedula = jsonObject.getString("cedula");
-                    String correo = jsonObject.getString("correo");
-                    int codigoCliente = Integer.parseInt(jsonObject.getString("codigoCliente"));
-                    String rol = jsonObject.getString("rol");
+                    double precio = Double.parseDouble(jsonObject.getString("precio"));
+                    boolean esActivo = Boolean.parseBoolean(jsonObject.getString("esActivo"));
+                    String fechaActivo = jsonObject.getString("fechaRegistro");
 
-                    Cliente cl = new Cliente(
-                            codigoCliente, nombre, apellido, activo,
-                            direccion, telefono, cedula, rol,
-                            correo, contrasenia);
+                    Producto cl = new Producto(
+                            stock, idProducto, nombre, precio, esActivo, fechaActivo
+                    );
                     personList.add(cl);
                 }
 

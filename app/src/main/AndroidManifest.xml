@@ -16,6 +16,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Vista.CarritoCompras"
+            android:exported="false" />
+        <activity
             android:name=".Vista.AccionesProductos"
             android:exported="false" />
         <activity
@@ -29,9 +32,6 @@
             android:exported="false" />
         <activity
             android:name=".Vista.Ventas"
-            android:exported="false" />
-        <activity
-            android:name=".Vista.Tabla"
             android:exported="false" />
         <activity
             android:name=".Vista.Login"

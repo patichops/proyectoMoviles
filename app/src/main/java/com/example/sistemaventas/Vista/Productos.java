@@ -28,6 +28,7 @@ public class Productos extends AppCompatActivity {
     private List<Producto> listaProductos;
     private Intent intentProductos;
     private Button buttonCliente;
+    private Button crear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class Productos extends AppCompatActivity {
         intentProductos = this.getIntent();
         listaProductos = llenarDatos();
         tablaProductos = findViewById(R.id.tableLayoutProductos);
+        crear = findViewById(R.id.buttonCrearProducto);
 
         for(Producto fac : listaProductos){
             TableRow tableRow = new TableRow(this);
@@ -96,13 +98,25 @@ public class Productos extends AppCompatActivity {
                 verClientes();
             }
         });
+
+        crear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editarProducto(0);
+            }
+        });
     }
 
     public List<Producto> llenarDatos(){
         List<Producto> resp;
         try {
-            resp = new ApiHandler.GetProductosTask().execute(url + "Productos").get();
-            return resp;
+            if (intentProductos.getExtras().get("rol").toString().equals("admin")) {
+                resp = new ApiHandler.GetProductosTask().execute(url + "Productos").get();
+                return resp;
+            } else {
+                resp = new ApiHandler.GetProductosActivosTask().execute(url + "Productos/ACTIVOS").get();
+                return resp;
+            }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -121,7 +135,7 @@ public class Productos extends AppCompatActivity {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ApiHandler.deleteAsync(url + id, new ApiHandler.OnDeleteDataListener() {
+                        ApiHandler.deleteAsync(url + "Productos/" + id, new ApiHandler.OnDeleteDataListener() {
                             @Override
                             public void onDeleteDataSuccess(String response) {
                                 Toast.makeText(Productos.this,"Dato eliminado exitosamente.",Toast.LENGTH_SHORT).show();
@@ -144,10 +158,11 @@ public class Productos extends AppCompatActivity {
     }
 
     public void editarProducto(int id){
-        Intent intent = new Intent(this, RealizarVenta.class);
+        Intent intent = new Intent(this, AccionesProductos.class);
         intent.putExtra("codCliente",
                 Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
         intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+        intent.putExtra("codigo", id);
         startActivity(intent);
     }
 

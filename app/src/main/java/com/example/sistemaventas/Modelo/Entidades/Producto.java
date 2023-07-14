@@ -8,6 +8,7 @@ public class Producto {
     public boolean esActivo;
     public String fechaActivo;
 
+    public Producto(){}
     public Producto(int stock, int idProducto,
                     String nombre, double precio,
                     boolean esActivo, String fechaActivo) {

@@ -76,6 +76,7 @@ public class AccionesCliente extends AppCompatActivity {
                     actualizarCliente();
                 }
             });
+
         } else {
             editCedula.setVisibility(View.VISIBLE);
             textVCedula.setVisibility(View.VISIBLE);
