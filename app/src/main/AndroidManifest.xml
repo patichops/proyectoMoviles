@@ -19,6 +19,9 @@
             android:name=".Vista.CarritoCompras"
             android:exported="false" />
         <activity
+            android:name=".Vista.MenuFlotante"
+            android:exported="false" />
+        <activity
             android:name=".Vista.AccionesProductos"
             android:exported="false" />
         <activity

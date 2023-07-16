@@ -13,7 +13,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sistemaventas.Modelo.ApiHandler;
+import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Producto;
 import com.example.sistemaventas.R;
 

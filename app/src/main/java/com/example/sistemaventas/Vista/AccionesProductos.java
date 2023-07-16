@@ -11,16 +11,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sistemaventas.Modelo.ApiHandler;
-import com.example.sistemaventas.Modelo.Entidades.Cliente;
+import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Producto;
 import com.example.sistemaventas.R;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
 public class AccionesProductos extends AppCompatActivity {

@@ -10,9 +10,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.example.sistemaventas.Modelo.ApiHandler;
+import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
 import com.example.sistemaventas.R;
+import com.google.android.material.navigation.NavigationBarMenu;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -24,12 +25,15 @@ public class Ventas extends AppCompatActivity {
     private List<Factura> listaVentas;
     private Intent intentVentas;
     private Button buttonProductos;
+    private Button buttonComprar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas);
         buttonProductos = findViewById(R.id.buttonProductos);
+        buttonComprar = findViewById(R.id.buttonRealizarVenta);
         intentVentas = this.getIntent();
 
         listaVentas = llenarDatos();
@@ -76,6 +80,13 @@ public class Ventas extends AppCompatActivity {
                 mirarProductos();
             }
         });
+
+        buttonComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                realizarVenta();
+            }
+        });
     }
 
     public void mirarFactura(){
@@ -87,6 +98,13 @@ public class Ventas extends AppCompatActivity {
 
     public void mirarProductos(){
         Intent intent = new Intent(this, Productos.class);
+        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+        startActivity(intent);
+    }
+
+    public void realizarVenta(){
+        Intent intent = new Intent(this, CarritoCompras.class);
         intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
         intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
         startActivity(intent);

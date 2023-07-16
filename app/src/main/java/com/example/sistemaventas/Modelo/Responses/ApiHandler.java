@@ -1,4 +1,4 @@
-package com.example.sistemaventas.Modelo;
+package com.example.sistemaventas.Modelo.Responses;
 
 import android.os.AsyncTask;
 import android.util.Log;

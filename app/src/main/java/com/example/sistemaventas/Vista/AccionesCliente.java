@@ -10,11 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sistemaventas.Modelo.ApiHandler;
+import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
 import com.example.sistemaventas.R;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
