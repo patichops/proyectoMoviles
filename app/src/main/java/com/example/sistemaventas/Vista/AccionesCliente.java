@@ -26,15 +26,9 @@ public class AccionesCliente extends AppCompatActivity {
     private Intent intentAcciones;
 
     private EditText nombre;
-    private TextView cedula;
-    private TextView textVCedula;
-    private EditText editCedula;
-    private EditText correo;
-    private EditText direccion;
-    private EditText telefono;
-    private EditText contrasenia;
-    private Button volver;
-    private Button guardar;
+    private TextView cedula,textVCedula;
+    private EditText editCedula,correo,direccion,telefono,contrasenia;
+    private Button volver,guardar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

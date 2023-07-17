@@ -4,8 +4,10 @@ import androidx.annotation.GravityInt;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -39,12 +41,14 @@ public class CarritoCompras extends AppCompatActivity {
 
     private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
     private List<String[]> carrito;
+    private float totalApagar;
+
 
     private GridView gridViewProductos;
-    private Button cancelar;
-    private Button continuar;
-    private Button mostrarCarrito;
+    private Button cancelar, continuar, mostrarCarrito;
     private Intent intentComprar;
+    private TextView total;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,9 @@ public class CarritoCompras extends AppCompatActivity {
         cancelar = findViewById(R.id.buttonCancelar);
         continuar = findViewById(R.id.buttonContinuar);
         mostrarCarrito = findViewById(R.id.buttonMostrarCarrito);
+        total = findViewById(R.id.textViewTotal);
+        totalApagar = 0;
+        total.setText("Total: " + totalApagar);
 
         //llenar datos
         List<Producto> lista = llenarDatos();
@@ -78,6 +85,7 @@ public class CarritoCompras extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 agregarProducto(
+                        lista.get(position).idProducto,
                         lista.get(position).nombre,
                         lista.get(position).stock,
                         lista.get(position).precio,
@@ -97,16 +105,17 @@ public class CarritoCompras extends AppCompatActivity {
         if (carrito == null){
             Toast.makeText(CarritoCompras.this, "No ha seleccionado ningun producto.", Toast.LENGTH_SHORT).show();
         } else {
-            Intent intent = new Intent(this, RealizarVenta.class);
-            intent.putExtra("codCliente", intentComprar.getExtras().get("codCliente").toString());
 
             ArrayList<ArrayList<String>> listaExtra = new ArrayList<>();
             for (String[] array : carrito) {
                 listaExtra.add(new ArrayList<>(Arrays.asList(array)));
             }
 
+            Intent intent = new Intent(this, RealizarVenta.class);
+            intent.putExtra("codCliente", intentComprar.getExtras().get("codCliente").toString());
             intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
             intent.putExtra("carrito", listaExtra);
+            intent.putExtra("subtotal", totalApagar);
             startActivity(intent);
         }
     }
@@ -116,61 +125,7 @@ public class CarritoCompras extends AppCompatActivity {
         if (carrito == null){
             Toast.makeText(CarritoCompras.this,"Tu carrito está vacio.",Toast.LENGTH_SHORT).show();
         } else {
-            LinearLayout rl = new LinearLayout(this);
-            rl.setPadding(5,5,5,5);
-            TableLayout tl = new TableLayout(this);
-            tl.setLayoutParams(new TableLayout.LayoutParams(0, TableLayout.LayoutParams.MATCH_PARENT, 1f));
-            tl.setGravity(Gravity.CENTER);
-
-            for (int i = 0; i < carrito.size(); i++) {
-                TableRow tr = new TableRow(this);
-
-                TextView t1 = new TextView(this);
-                t1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                t1.setText(carrito.get(i)[0]);
-                tr.addView(t1);
-
-                TextView t3 = new TextView(this);
-                t3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                t3.setText(carrito.get(i)[1]);
-                tr.addView(t3);
-
-                TextView t2 = new TextView(this);
-                t2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                t2.setText(carrito.get(i)[2]);
-                tr.addView(t2);
-
-                TextView t4 = new TextView(this);
-                t4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                t4.setText(carrito.get(i)[3]);
-                tr.addView(t4);
-
-                TextView t5 = new TextView(this);
-                t5.setText(carrito.get(i)[4]);
-                t5.setVisibility(View.GONE);
-                tr.addView(t5);
-
-                Button editarProducto = new Button(this);
-                editarProducto.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                editarProducto.setText("EDITAR");
-                int finalI = i;
-                editarProducto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        agregarProducto(
-                                carrito.get(finalI)[0],
-                                Integer.parseInt(carrito.get(finalI)[4]),
-                                Double.parseDouble(carrito.get(finalI)[2]),
-                                v);
-
-                    }
-                });
-                tr.addView(editarProducto);
-
-                tl.addView(tr);
-            }
-
-            rl.addView(tl);
+            View rl = tablaMostrarCarrito();
             AlertDialog.Builder bd = new AlertDialog.Builder(this);
             bd
                     .setView(rl)
@@ -220,7 +175,7 @@ public class CarritoCompras extends AppCompatActivity {
         return lista;
     }
 
-    private void agregarProducto(String nombre, int max, double precio, View v){
+    private void agregarProducto(int idProducto, String nombre, int max, double precio, View v){
         AlertDialog.Builder bd = new AlertDialog.Builder(this);
         EditText cantidad = new EditText(this);
         cantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -253,6 +208,7 @@ public class CarritoCompras extends AppCompatActivity {
             }
         });
 
+        AlertDialog alert;
         bd.setMessage("¿Cuanto(s) " + nombre +"(s) desea comprar?")
                 .setView(cantidad)
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
@@ -265,19 +221,152 @@ public class CarritoCompras extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         accionAgregarProducto(
+                                idProducto,
                                 nombre,
                                 precio,
                                 Integer.parseInt(cantidad.getText().toString()),
                                 max);
                     }
                 });
-        bd.create();
-        bd.show();
+        alert = bd.create();
+        alert.show();
     }
 
-    private void accionAgregarProducto(String nombre, double precio, int cantidad, int max){
-        if (carrito != null){
+    public View tablaMostrarCarrito(){
+        LinearLayout rl = new LinearLayout(this);
+        rl.setPadding(5,5,5,5);
+        TableLayout tl = new TableLayout(this);
+        tl.setLayoutParams(new TableLayout.LayoutParams(0, TableLayout.LayoutParams.MATCH_PARENT, 1f));
+        tl.setGravity(Gravity.CENTER);
+
+        TableRow tr = new TableRow(this);
+
+        TextView h0 = new TextView(this);
+        h0.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h0.setText("Codigo");
+        h0.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h0.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        tr.addView(h0);
+
+        TextView h1 = new TextView(this);
+        h1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h1.setText("Producto");
+        h1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h1.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        tr.addView(h1);
+
+        TextView h3 = new TextView(this);
+        h3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h3.setText("Cantidad");
+        h3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h3.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        tr.addView(h3);
+
+        TextView h2 = new TextView(this);
+        h2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h2.setText("Precio");
+        h2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h2.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        tr.addView(h2);
+
+        TextView h4 = new TextView(this);
+        h4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h4.setText("Total");
+        h4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h4.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        tr.addView(h4);
+
+        TextView h5 = new TextView(this);
+        h5.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h5.setText("");
+        tr.addView(h5);
+
+        TextView h6 = new TextView(this);
+        h6.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h6.setText("");
+        tr.addView(h6);
+
+        tl.addView(tr);
+
+        for (int i = 0; i < carrito.size(); i++) {
+            tr = new TableRow(this);
+
+            TextView t0 = new TextView(this);
+            t0.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            t0.setText(carrito.get(i)[0]);
+            t0.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(t0);
+
+            TextView t1 = new TextView(this);
+            t1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            t1.setText(carrito.get(i)[1]);
+            t1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(t1);
+
+            TextView t3 = new TextView(this);
+            t3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            t3.setText(carrito.get(i)[2]);
+            t3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(t3);
+
+            TextView t2 = new TextView(this);
+            t2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            t2.setText(carrito.get(i)[3]);
+            t2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(t2);
+
+            TextView t4 = new TextView(this);
+            t4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            t4.setText(carrito.get(i)[4]);
+            t4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(t4);
+
+            TextView t5 = new TextView(this);
+            t5.setText(carrito.get(i)[5]);
+            t5.setVisibility(View.GONE);
+            tr.addView(t5);
+
+            Button editarProducto = new Button(this);
+            editarProducto.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            editarProducto.setText("EDITAR");
+            int finalI = i;
+            editarProducto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    agregarProducto(
+                            Integer.parseInt(carrito.get(finalI)[0]),
+                            carrito.get(finalI)[1],
+                            Integer.parseInt(carrito.get(finalI)[5]),
+                            Double.parseDouble(carrito.get(finalI)[3]),
+                            v);
+                }
+            });
+            tr.addView(editarProducto);
+
+            Button quitarProducto = new Button(this);
+            quitarProducto.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            quitarProducto.setText("QUITAR");
+            quitarProducto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    accionQuitarProductos(carrito.get(finalI)[1]);
+                }
+            });
+            tr.addView(quitarProducto);
+
+            tl.addView(tr);
+        }
+
+        rl.addView(tl);
+
+        return rl;
+    }
+
+    private void accionAgregarProducto(int idProducto, String nombre, double precio, int cantidad, int max){
+        if (carrito != null && carrito.size() != 0){
+            totalApagar += precio * cantidad;
             String[] valor = new String[] {
+                    String.valueOf(idProducto),
                     nombre,
                     String.valueOf(cantidad),
                     String.valueOf(precio),
@@ -289,6 +378,7 @@ public class CarritoCompras extends AppCompatActivity {
             for (int i = 0; i < carrito.size(); i++) {
                 String[] elemento = carrito.get(i);
                 if (elemento[0].equals(valor[0])) {
+                    totalApagar = totalApagar - Float.parseFloat(carrito.get(i)[4]);
                     carrito.set(i, valor);
                     encontrado = true;
                     break;
@@ -300,7 +390,9 @@ public class CarritoCompras extends AppCompatActivity {
             }
         } else {
             carrito = new ArrayList<>();
+            totalApagar += precio * cantidad;
             String[] valor = new String[] {
+                    String.valueOf(idProducto),
                     nombre,
                     String.valueOf(cantidad),
                     String.valueOf(precio),
@@ -311,5 +403,23 @@ public class CarritoCompras extends AppCompatActivity {
         }
 
         Toast.makeText(CarritoCompras.this, "Agregado al carrito.", Toast.LENGTH_SHORT).show();
+        total.setText("Total: " + totalApagar);
+    }
+
+    private void accionQuitarProductos(String nombre){
+        if (carrito != null) {
+            for (int i = 0; i < carrito.size(); i++) {
+                String[] elemento = carrito.get(i);
+                if (elemento[1].equals(nombre)) {
+                    totalApagar = totalApagar - Float.parseFloat(carrito.get(i)[4]);
+                    carrito.remove(elemento);
+                    break;
+                }
+            }
+            total.setText("Total: " + totalApagar);
+            Toast.makeText(CarritoCompras.this, "Producto quitado.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(CarritoCompras.this, "El carrito se encuentra vacio.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

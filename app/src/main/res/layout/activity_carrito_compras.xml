@@ -49,33 +49,57 @@
     </Toolbar>
 
     <TextView
-        android:id="@+id/textView23"
+        android:id="@+id/textViewTotal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="43dp"
         android:background="@color/white"
-        android:text="Catalogo"
+        android:text=""
         android:textAlignment="center"
         android:textSize="30dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/textView24"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:text="Los precios no incluyen IVA"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTotal" />
 
     <GridView
         android:id="@+id/gridViewProductos"
         android:layout_width="match_parent"
-        android:layout_height="564dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp"
+        android:layout_height="538dp"
         android:numColumns="2"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/footer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView23" />
+        app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
     <include
         android:id="@+id/include3"
         layout="@layout/app_layout_principal"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="203dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="#00FFFFFF"
+        android:text="Catalogo"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
