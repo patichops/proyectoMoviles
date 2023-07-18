@@ -1,31 +1,50 @@
 package com.example.sistemaventas.Vista;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.example.sistemaventas.Modelo.Entidades.Cliente;
 import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
 import com.example.sistemaventas.R;
-import com.google.android.material.navigation.NavigationBarMenu;
+import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Ventas extends AppCompatActivity {
+public class Ventas extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     String url = "http://www.sistemaventasepe.somee.com/api/";
+
     private TableLayout tablaVentas;
     private List<Factura> listaVentas;
     private Intent intentVentas;
-    private Button buttonProductos;
-    private Button buttonComprar;
+    private Button buttonProductos, buttonComprar,anterior, siguiente, menu;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
+    private int currentPage = 1, pageSize = 5, totalPages;
 
 
     @Override
@@ -35,11 +54,150 @@ public class Ventas extends AppCompatActivity {
         buttonProductos = findViewById(R.id.buttonProductos);
         buttonComprar = findViewById(R.id.buttonRealizarVenta);
         intentVentas = this.getIntent();
-
-        listaVentas = llenarDatos();
+        drawerLayout = findViewById(R.id.drawerMenuFlotante);
+        navigationView = findViewById(R.id.nav_view);
+        anterior = findViewById(R.id.buttonAnterior);
+        siguiente = findViewById(R.id.buttonSiguiente);
         tablaVentas = findViewById(R.id.tableLayoutVentas);
+        menu = findViewById(R.id.btMenuFlotante);
 
-        for(Factura fac : listaVentas){
+        listaVentas = filtrarPorUsuario(llenarDatos());
+        totalPages = (int) Math.ceil((double) listaVentas.size() / pageSize);
+        updateTable();
+
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                android.R.string.ok,
+                android.R.string.cancel
+        );
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        buttonProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mirarProductos();
+            }
+        });
+
+        buttonComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                realizarVenta();
+            }
+        });
+
+        anterior.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTable();
+                }
+            }
+        });
+
+        siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateTable();
+                }
+            }
+        });
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+    }
+
+    public void mirarFactura(int verificar) {
+        Intent intent = new Intent(this, RealizarVenta.class);
+        intent.putExtra("verificador", verificar);
+        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+        startActivity(intent);
+        finish();
+    }
+
+    public void mirarProductos() {
+        Intent intent = new Intent(this, Productos.class);
+        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+        startActivity(intent);
+        finish();
+    }
+
+    public void realizarVenta() {
+        Intent intent = new Intent(this, CarritoCompras.class);
+        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+        startActivity(intent);
+        finish();
+    }
+
+    public List<Factura> llenarDatos() {
+        List<Factura> resp;
+        try {
+            resp = new ApiHandler.GetFacturasTask().execute(url + "Ventas").get();
+            return resp;
+        } catch (ExecutionException | InterruptedException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        item.setCheckable(true);
+        item.setChecked(true);
+
+        if (id == R.id.nav_1) {
+            Intent intent = new Intent(Ventas.this, Clientes.class);
+            intent.putExtra("codCliente",
+                    Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+            startActivity(intent);
+        } else if (id == R.id.nav_2) {
+            Intent intent = new Intent(Ventas.this, Productos.class);
+            intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+            startActivity(intent);
+        } else if (id == R.id.nav_3) {
+            Intent intent = new Intent(Ventas.this, Ventas.class);
+            intent.putExtra("codCliente", intentVentas.getExtras().get("codCliente").toString());
+            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+            startActivity(intent);
+        } else if (id == R.id.nav_4) {
+            Intent intent = new Intent(Ventas.this, CarritoCompras.class);
+            intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+            startActivity(intent);
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void updateTable() {
+        tablaVentas.removeAllViews();
+
+        int start = (currentPage - 1) * pageSize;
+        int end = Math.min(start + pageSize, listaVentas.size());
+
+        for (int i = start; i < end; i++) {
+            Factura fac = listaVentas.get(i);
+
             TableRow tableRow = new TableRow(this);
 
             TextView campo1 = new TextView(this);
@@ -66,57 +224,29 @@ public class Ventas extends AppCompatActivity {
             verFactura.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mirarFactura();
+                    mirarFactura(fac.idVenta);
                 }
             });
             tableRow.addView(verFactura);
 
             tablaVentas.addView(tableRow);
         }
+    }
 
-        buttonProductos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mirarProductos();
+    public List<Factura> filtrarPorUsuario(List<Factura> data){
+        List<Factura> lista = new ArrayList<>();
+        if (intentVentas.getExtras().get("rol").toString().equals("usuario")){
+            for (int i = 0; i < data.size(); i++) {
+                if (data.get(i).cliente.equals(intentVentas.getExtras().get("nombre").toString())){
+                    lista.add(data.get(i));
+                }
+
             }
-        });
 
-        buttonComprar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                realizarVenta();
-            }
-        });
-    }
-
-    public void mirarFactura(){
-        Intent intent = new Intent(this, RealizarVenta.class);
-        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-        startActivity(intent);
-    }
-
-    public void mirarProductos(){
-        Intent intent = new Intent(this, Productos.class);
-        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-        startActivity(intent);
-    }
-
-    public void realizarVenta(){
-        Intent intent = new Intent(this, CarritoCompras.class);
-        intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-        intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-        startActivity(intent);
-    }
-
-    public List<Factura> llenarDatos(){
-        List<Factura> resp;
-        try {
-            resp = new ApiHandler.GetFacturasTask().execute(url + "Ventas").get();
-            return resp;
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
+            return lista;
+        } else {
+            return data;
         }
     }
+
 }

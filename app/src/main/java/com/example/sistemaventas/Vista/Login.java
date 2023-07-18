@@ -96,8 +96,10 @@ public class Login extends AppCompatActivity {
                 Intent intent = new Intent(Login.this, Ventas.class);
                 intent.putExtra("token", token);
                 intent.putExtra("codCliente", cl.codigoCliente);
+                intent.putExtra("nombre", cl.nombre + " " + cl.apellido);
                 intent.putExtra("rol", cl.rol);
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(Login.this.getBaseContext(),"Error: Inicio de sesión no valido", Toast.LENGTH_SHORT).show();
             }

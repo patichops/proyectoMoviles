@@ -27,7 +27,9 @@ public class Clientes extends AppCompatActivity {
     private TableLayout tablaClientes;
     private List<Cliente> listaClientes;
     private Intent intentCliente;
-    private Button regresar;
+    private Button regresar, anterior, siguiente;
+
+    private int currentPage = 1, pageSize = 5, totalPages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,67 +38,41 @@ public class Clientes extends AppCompatActivity {
         intentCliente = this.getIntent();
         listaClientes = llenarDatos();
         tablaClientes = findViewById(R.id.tableLayoutClientes);
+        anterior = findViewById(R.id.buttonAnterior);
+        siguiente = findViewById(R.id.buttonSiguiente);
+        totalPages = (int) Math.ceil((double) listaClientes.size() / pageSize);
+        updateTable();
 
-        for (Cliente fac : listaClientes) {
-            TableRow tableRow = new TableRow(this);
-
-            TextView campo1 = new TextView(this);
-            campo1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            campo1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            campo1.setText(String.valueOf(fac.cedula));
-            tableRow.addView(campo1);
-
-            TextView campo2 = new TextView(this);
-            campo2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            campo2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            campo2.setText(fac.nombre + " " + fac.apellido);
-            tableRow.addView(campo2);
-
-            TextView campo3 = new TextView(this);
-            campo3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            campo3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            campo3.setText(String.valueOf(fac.direccion));
-            tableRow.addView(campo3);
-
-            TextView campo4 = new TextView(this);
-            campo4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            campo4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            campo4.setText(String.valueOf(fac.telefono));
-            tableRow.addView(campo4);
-
-            Button editarCliente = new Button(this);
-            editarCliente.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            editarCliente.setText("EDITAR");
-            editarCliente.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editarCliente(fac.codigoCliente);
-                }
-            });
-            tableRow.addView(editarCliente);
-
-            Button eliminarCliente = new Button(this);
-            eliminarCliente.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            eliminarCliente.setText("ELIMINAR");
-            eliminarCliente.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    eliminarCliente(fac.codigoCliente);
-                }
-            });
-            tableRow.addView(eliminarCliente);
-
-            tablaClientes.addView(tableRow);
-
-            regresar = findViewById(R.id.buttonProductos);
-            regresar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        regresar = findViewById(R.id.buttonProductos);
+        regresar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                     voler();
                 }
-            });
-        }
+        });
+
+
+        anterior.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTable();
+                }
+            }
+        });
+
+        siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateTable();
+                }
+            }
+        });
     }
+
 
     private void voler() {
         Intent intent = new Intent(this, Productos.class);
@@ -163,6 +139,67 @@ public class Clientes extends AppCompatActivity {
 
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void updateTable() {
+        tablaClientes.removeAllViews();
+
+        int start = (currentPage - 1) * pageSize;
+        int end = Math.min(start + pageSize, listaClientes.size());
+
+        for (int i = start; i < end; i++) {
+            Cliente fac = listaClientes.get(i);
+
+            TableRow tableRow = new TableRow(this);
+
+            TextView campo1 = new TextView(this);
+            campo1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            campo1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            campo1.setText(String.valueOf(fac.cedula));
+            tableRow.addView(campo1);
+
+            TextView campo2 = new TextView(this);
+            campo2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            campo2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            campo2.setText(fac.nombre + " " + fac.apellido);
+            tableRow.addView(campo2);
+
+            TextView campo3 = new TextView(this);
+            campo3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            campo3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            campo3.setText(String.valueOf(fac.direccion));
+            tableRow.addView(campo3);
+
+            TextView campo4 = new TextView(this);
+            campo4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            campo4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            campo4.setText(String.valueOf(fac.telefono));
+            tableRow.addView(campo4);
+
+            Button editarCliente = new Button(this);
+            editarCliente.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            editarCliente.setText("EDITAR");
+            editarCliente.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editarCliente(fac.codigoCliente);
+                }
+            });
+            tableRow.addView(editarCliente);
+
+            Button eliminarCliente = new Button(this);
+            eliminarCliente.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            eliminarCliente.setText("ELIMINAR");
+            eliminarCliente.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    eliminarCliente(fac.codigoCliente);
+                }
+            });
+            tableRow.addView(eliminarCliente);
+
+            tablaClientes.addView(tableRow);
         }
     }
 }

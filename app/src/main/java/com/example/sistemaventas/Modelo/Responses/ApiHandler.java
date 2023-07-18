@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
+import com.example.sistemaventas.Modelo.Entidades.DetalleVenta;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
 import com.example.sistemaventas.Modelo.Entidades.Producto;
 
@@ -413,38 +414,17 @@ public class ApiHandler {
         return response.toString();
     }
 
-    public static class GetFacturasIDTask extends AsyncTask<String, Void, List<Factura>> {
+    public static class GetFacturasIDTask extends AsyncTask<String, Void, JSONObject> {
 
-        List<Factura> personList = new ArrayList<>();
+        JSONObject personList = new JSONObject();
 
         @Override
-        public List<Factura> doInBackground(String... urls) {
+        public JSONObject doInBackground(String... urls) {
             String apiUrl = urls[0];
 
             try {
                 String jsonString = ApiHandler.GetFacturasID(apiUrl);
-                JSONObject responseJson = new JSONObject(jsonString);
-                JSONArray dataArray = responseJson.getJSONArray("data");
-
-                for (int i = 0; i < dataArray.length(); i++) {
-                    JSONObject jsonObject = dataArray.getJSONObject(i);
-
-
-                    int idVenta = Integer.parseInt(jsonObject.getString("idVenta"));
-                    String cedula = jsonObject.getString("numeroDocumento");
-                    String direccion = jsonObject.getString("tipoPago");
-                    String telefono = jsonObject.getString("nombre");
-                    String cliente = jsonObject.getString("cliente");
-                    double total = Double.parseDouble(jsonObject.getString("total"));
-                    String fechaRegistro = jsonObject.getString("fechaRegistro");
-
-                    Factura cl = new Factura(
-                            idVenta, cedula, direccion,
-                            telefono, cliente, total,
-                            fechaRegistro);
-                    personList.add(cl);
-                }
-
+                personList = new JSONObject(jsonString);
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }

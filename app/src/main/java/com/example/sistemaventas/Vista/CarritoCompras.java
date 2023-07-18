@@ -114,8 +114,10 @@ public class CarritoCompras extends AppCompatActivity {
             Intent intent = new Intent(this, RealizarVenta.class);
             intent.putExtra("codCliente", intentComprar.getExtras().get("codCliente").toString());
             intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+            intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
             intent.putExtra("carrito", listaExtra);
             intent.putExtra("subtotal", totalApagar);
+            intent.putExtra("verificador", -1);
             startActivity(intent);
         }
     }
@@ -154,6 +156,7 @@ public class CarritoCompras extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(CarritoCompras.this, Ventas.class);
                         intent.putExtra("codCliente", intentComprar.getExtras().get("codCliente").toString());
+                        intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
                         intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
                         startActivity(intent);
                     }

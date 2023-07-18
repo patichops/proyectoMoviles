@@ -144,7 +144,10 @@ public class AccionesCliente extends AppCompatActivity {
             });
 
         } catch (Exception e) {
-            Toast.makeText(AccionesCliente.this, "Error desconocido: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    AccionesCliente.this,
+                    "Error desconocido: " + e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -8,15 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
+import com.example.sistemaventas.Modelo.Entidades.DetalleVenta;
 import com.example.sistemaventas.Modelo.Entidades.Factura;
-import com.example.sistemaventas.Modelo.Entidades.Producto;
 import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.R;
 
@@ -72,75 +71,175 @@ public class RealizarVenta extends AppCompatActivity {
         comprar = findViewById(R.id.buttonCrearCompra);
         tablaProductos = findViewById(R.id.tableLayoutProductos);
 
-        usuario = traerCliente(Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
-        carrito = (ArrayList<ArrayList<String>>) intentRealizarVenta.getExtras().get("carrito");
-        numVenta.setText(String.valueOf(traerUltimaVenta()));
+        int verificador = Integer.parseInt(
+                intentRealizarVenta.getExtras().get("verificador").toString());
+        if (verificador > 0){
+            comprar.setVisibility(View.GONE);
+            cancelar.setText("ACEPTAR");
+            traerFactura(verificador);
 
-        for (int i = 0; i < carrito.size(); i++) {
-            TableRow tr = new TableRow(this);
+            cancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    regresar();
+                }
+            });
 
-            TextView t0 = new TextView(this);
-            t0.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            t0.setText(carrito.get(i).get(0));
-            t0.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tr.addView(t0);
+        } else {
+            usuario = traerCliente(Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
+            carrito = (ArrayList<ArrayList<String>>) intentRealizarVenta.getExtras().get("carrito");
+            numVenta.setText(String.valueOf(traerUltimaVenta()));
 
-            TextView t1 = new TextView(this);
-            t1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            t1.setText(carrito.get(i).get(1));
-            t1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tr.addView(t1);
+            for (int i = 0; i < carrito.size(); i++) {
+                TableRow tr = new TableRow(this);
 
-            TextView t3 = new TextView(this);
-            t3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            t3.setText(carrito.get(i).get(2));
-            t3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tr.addView(t3);
+                TextView t0 = new TextView(this);
+                t0.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t0.setText(carrito.get(i).get(0));
+                t0.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t0);
 
-            TextView t2 = new TextView(this);
-            t2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            t2.setText(carrito.get(i).get(3));
-            t2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tr.addView(t2);
+                TextView t1 = new TextView(this);
+                t1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t1.setText(carrito.get(i).get(1));
+                t1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t1);
 
-            TextView t4 = new TextView(this);
-            t4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            t4.setText(carrito.get(i).get(4));
-            t4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tr.addView(t4);
+                TextView t3 = new TextView(this);
+                t3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t3.setText(carrito.get(i).get(2));
+                t3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t3);
 
-            tablaProductos.addView(tr);
+                TextView t2 = new TextView(this);
+                t2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t2.setText(carrito.get(i).get(3));
+                t2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t2);
+
+                TextView t4 = new TextView(this);
+                t4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t4.setText(carrito.get(i).get(4));
+                t4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t4);
+
+                tablaProductos.addView(tr);
+            }
+
+            Date fechaActual = Calendar.getInstance().getTime();
+            fecha.setText(fechaActual.toString());
+            nombre.setText(usuario.nombre);
+            direccion.setText(usuario.direccion);
+            telefono.setText(usuario.telefono);
+            subtotal.setText(intentRealizarVenta.getExtras().get("subtotal").toString());
+
+            float subto = Float.parseFloat(intentRealizarVenta.getExtras().get("subtotal").toString());
+            valorTotal = (subto * 0.12f) + subto;
+
+            total.setText(String.valueOf(valorTotal));
+            iva.setText("0.12");
+
+            cancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancelarCompra();
+                }
+            });
+
+            comprar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    efectuarCompra();
+                }
+            });
         }
 
-        Date fechaActual = Calendar.getInstance().getTime();
-        fecha.setText(fechaActual.toString());
-        nombre.setText(usuario.nombre);
-        direccion.setText(usuario.direccion);
-        telefono.setText(usuario.telefono);
-        subtotal.setText(intentRealizarVenta.getExtras().get("subtotal").toString());
 
-        float subto = Float.parseFloat(intentRealizarVenta.getExtras().get("subtotal").toString());
-        valorTotal = (subto * 0.12f) + subto;
-
-        total.setText(String.valueOf(valorTotal));
-        iva.setText("0.12");
-
-
-        cancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelarCompra();
-            }
-        });
-
-        comprar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                efectuarCompra();
-            }
-        });
     }
 
+    public void traerFactura(int verificador){
+        JSONObject factura;
+        try {
+            factura = new ApiHandler.GetFacturasIDTask().execute(URL + "Ventas/" + verificador).get();
+
+            numVenta.setText(factura.toString());
+
+            JSONArray ftr = factura.getJSONArray("factura");
+            Factura fac = new Factura(
+                    Integer.parseInt(ftr.getJSONObject(0).getString("idVenta")),
+                    ftr.getJSONObject(0).getString("cedula"),
+                    ftr.getJSONObject(0).getString("direccion"),
+                    ftr.getJSONObject(0).getString("telefono"),
+                    ftr.getJSONObject(0).getString("cliente"),
+                    Double.parseDouble(ftr.getJSONObject(0).getString("total")),
+                    ftr.getJSONObject(0).getString("fechaRegistro")
+            );
+
+            numVenta.setText(String.valueOf(fac.idVenta));
+            fecha.setText(fac.fechaRegistro);
+            nombre.setText(fac.cliente);
+            direccion.setText(fac.direccion);
+            telefono.setText(fac.telefono);
+            subtotal.setText(factura.getString("subtotal"));
+            iva.setText(factura.getString("iva"));
+            total.setText(String.valueOf(fac.total));
+
+            JSONArray lsdv = factura.getJSONArray("detalle");
+
+            List<DetalleVenta> ls = new ArrayList<>();
+            for (int i = 0; i < lsdv.length(); i++) {
+                DetalleVenta dv = new DetalleVenta(
+                        Integer.parseInt(lsdv.getJSONObject(i).getString("idDetalleVenta")),
+                        Integer.parseInt(lsdv.getJSONObject(i).getString("idVenta")),
+                        lsdv.getJSONObject(i).getString("nombre"),
+                        Integer.parseInt(lsdv.getJSONObject(i).getString("cantidad")),
+                        Double.parseDouble(lsdv.getJSONObject(i).getString("precio")),
+                        Double.parseDouble(lsdv.getJSONObject(i).getString("total"))
+                );
+
+                ls.add(dv);
+            }
+
+            for (int i = 0; i < ls.size(); i++) {
+                TableRow tr = new TableRow(this);
+
+                TextView t0 = new TextView(this);
+                t0.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t0.setText(String.valueOf(ls.get(i).idDetalleVenta));
+                t0.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t0);
+
+                TextView t1 = new TextView(this);
+                t1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t1.setText(ls.get(i).nombre);
+                t1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t1);
+
+                TextView t3 = new TextView(this);
+                t3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t3.setText(String.valueOf(ls.get(i).cantidad));
+                t3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t3);
+
+                TextView t2 = new TextView(this);
+                t2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t2.setText(String.valueOf(ls.get(i).precio));
+                t2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t2);
+
+                TextView t4 = new TextView(this);
+                t4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                t4.setText(String.valueOf(ls.get(i).total));
+                t4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tr.addView(t4);
+
+                tablaProductos.addView(tr);
+            }
+
+        } catch (ExecutionException | InterruptedException | JSONException e) {
+            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+        }
+    }
     public Cliente traerCliente(int codigo){
         Cliente res;
         try {
@@ -166,10 +265,7 @@ public class RealizarVenta extends AppCompatActivity {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(RealizarVenta.this, Ventas.class);
-                        intent.putExtra("codCliente", intentRealizarVenta.getExtras().get("codCliente").toString());
-                        intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
-                        startActivity(intent);
+                        regresar();
                     }
                 });
         bd.create();
@@ -208,13 +304,15 @@ public class RealizarVenta extends AppCompatActivity {
             json.put("productos",jsonProductos);
             json.put("cliente",jsonCliente);
             json.put("total",valorTotal);
-            json.put("subTotal",Float.parseFloat(intentRealizarVenta.getExtras().get("subtotal").toString()));
-            json.put("iva",0.12f); //
+            json.put("subTotal",Float.parseFloat(
+                    intentRealizarVenta.getExtras().get("subtotal").toString()));
+            json.put("iva",0.12f);
 
             ApiHandler.CrearDataAsync(URL + "Ventas", json, new ApiHandler.OnPostDataListener() {
                 @Override
                 public void onPostDataSuccess(String response) {
                     Toast.makeText(RealizarVenta.this,"Venta generada correctamente.", Toast.LENGTH_SHORT).show();
+                    regresar();
                 }
 
                 @Override
@@ -227,6 +325,15 @@ public class RealizarVenta extends AppCompatActivity {
         }
 
 
+    }
+
+    public void regresar(){
+        Intent intent = new Intent(RealizarVenta.this, Ventas.class);
+        intent.putExtra("codCliente", intentRealizarVenta.getExtras().get("codCliente").toString());
+        intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
+        intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
+        startActivity(intent);
+        this.finish();
     }
 
     public int traerUltimaVenta(){

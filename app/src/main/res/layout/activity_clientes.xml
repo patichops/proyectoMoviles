@@ -34,7 +34,7 @@
     <TableLayout
         android:id="@+id/tableLayoutClientes"
         android:layout_width="match_parent"
-        android:layout_height="484dp"
+        android:layout_height="455dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
@@ -98,6 +98,26 @@
                 android:textStyle="bold" />
         </TableRow>
     </TableLayout>
+
+    <Button
+        android:id="@+id/buttonSiguiente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="236dp"
+        android:layout_marginTop="28dp"
+        android:text="Siguiente"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayoutClientes" />
+
+    <Button
+        android:id="@+id/buttonAnterior"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="28dp"
+        android:text="Anterior"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayoutClientes" />
 
     <Button
         android:id="@+id/buttonProductos"

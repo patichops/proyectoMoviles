@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.SistemaVentas" parent="Base.Theme.SistemaVentas" />
+    <style name="Theme.SistemaVentas.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.SistemaVentas.AppBarOverlay"
+        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.SistemaVentas.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
