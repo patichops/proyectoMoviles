@@ -60,7 +60,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Cedula"
-                android:inputType="text"
+                android:inputType="number"
+                android:maxLength="10"
                 android:visibility="visible" />
 
             <TextView
@@ -74,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Nombre"
+                android:hint="Nombre Apellido"
                 android:inputType="text" />
 
             <TextView
@@ -103,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Telefono"
-                android:inputType="text" />
+                android:inputType="number" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -117,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Correo"
-                android:inputType="text" />
+                android:inputType="text|textEmailAddress" />
 
             <TextView
                 android:id="@+id/textView9"
@@ -131,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Contraseña"
-                android:inputType="text" />
+                android:inputType="text|textPassword" />
         </LinearLayout>
     </ScrollView>
 

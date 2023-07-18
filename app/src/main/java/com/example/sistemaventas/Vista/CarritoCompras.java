@@ -49,6 +49,9 @@ public class CarritoCompras extends AppCompatActivity {
     private Intent intentComprar;
     private TextView total;
 
+    //menu
+    private TextView logout, clientes, productos, ventas, home;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,8 @@ public class CarritoCompras extends AppCompatActivity {
         total = findViewById(R.id.textViewTotal);
         totalApagar = 0;
         total.setText("Total: " + totalApagar);
+
+        habilitarMenu();
 
         //llenar datos
         List<Producto> lista = llenarDatos();
@@ -101,6 +106,69 @@ public class CarritoCompras extends AppCompatActivity {
         });
     }
 
+    private void habilitarMenu() {
+        //Habilitar el menu
+        logout = findViewById(R.id.btMenuCerrarSesion);
+        clientes = findViewById(R.id.btMenuClientes);
+        productos = findViewById(R.id.btMenuProductos);
+        ventas = findViewById(R.id.btMenuVentas);
+        home = findViewById(R.id.btHome);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarritoCompras.this, Login.class);
+                startActivity(intent);
+                CarritoCompras.this.finish();
+            }
+        });
+        clientes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarritoCompras.this, Clientes.class);
+                intent.putExtra("codCliente",
+                        Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
+                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
+                startActivity(intent);
+                CarritoCompras.this.finish();
+            }
+        });
+        productos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarritoCompras.this, Productos.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
+                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
+                startActivity(intent);
+                CarritoCompras.this.finish();
+            }
+        });
+        ventas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarritoCompras.this, CarritoCompras.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
+                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
+                startActivity(intent);
+                CarritoCompras.this.finish();
+            }
+        });
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarritoCompras.this, Ventas.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
+                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
+                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+                startActivity(intent);
+                CarritoCompras.this.finish();
+            }
+        });
+    }
     public void _continuar(){
         if (carrito == null){
             Toast.makeText(CarritoCompras.this, "No ha seleccionado ningun producto.", Toast.LENGTH_SHORT).show();

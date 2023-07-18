@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,19 +34,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Ventas extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Ventas extends AppCompatActivity {
 
     String url = "http://www.sistemaventasepe.somee.com/api/";
 
     private TableLayout tablaVentas;
     private List<Factura> listaVentas;
     private Intent intentVentas;
-    private Button buttonProductos, buttonComprar,anterior, siguiente, menu;
+    private Button buttonProductos, buttonComprar, anterior, siguiente;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
     private int currentPage = 1, pageSize = 5, totalPages;
 
+
+    //menu
+    private TextView logout, clientes, productos, ventas, home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,8 @@ public class Ventas extends AppCompatActivity implements NavigationView.OnNaviga
         anterior = findViewById(R.id.buttonAnterior);
         siguiente = findViewById(R.id.buttonSiguiente);
         tablaVentas = findViewById(R.id.tableLayoutVentas);
-        menu = findViewById(R.id.btMenuFlotante);
+
+        habilitarMenu();
 
         listaVentas = filtrarPorUsuario(llenarDatos());
         totalPages = (int) Math.ceil((double) listaVentas.size() / pageSize);
@@ -72,9 +77,6 @@ public class Ventas extends AppCompatActivity implements NavigationView.OnNaviga
                 android.R.string.ok,
                 android.R.string.cancel
         );
-        drawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
         buttonProductos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,13 +112,70 @@ public class Ventas extends AppCompatActivity implements NavigationView.OnNaviga
             }
         });
 
-        menu.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void habilitarMenu() {
+        //Habilitar el menu
+        logout = findViewById(R.id.btMenuCerrarSesion);
+        clientes = findViewById(R.id.btMenuClientes);
+        productos = findViewById(R.id.btMenuProductos);
+        ventas = findViewById(R.id.btMenuVentas);
+        home = findViewById(R.id.btHome);
+
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(Ventas.this, Login.class);
+                startActivity(intent);
+                Ventas.this.finish();
+            }
+        });
+        clientes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Ventas.this, Clientes.class);
+                intent.putExtra("codCliente",
+                        Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+                intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+                intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+                startActivity(intent);
+                Ventas.this.finish();
+            }
+        });
+        productos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Ventas.this, Productos.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+                intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+                intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+                startActivity(intent);
+                Ventas.this.finish();
+            }
+        });
+        ventas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Ventas.this, CarritoCompras.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+                intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+                intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+                startActivity(intent);
+                Ventas.this.finish();
             }
         });
 
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Ventas.this, Ventas.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+                intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+                intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+                startActivity(intent);
+                Ventas.this.finish();
+            }
+        });
     }
 
     public void mirarFactura(int verificar) {
@@ -132,6 +191,7 @@ public class Ventas extends AppCompatActivity implements NavigationView.OnNaviga
     public void mirarProductos() {
         Intent intent = new Intent(this, Productos.class);
         intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+        intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
         intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
         startActivity(intent);
         finish();
@@ -154,39 +214,6 @@ public class Ventas extends AppCompatActivity implements NavigationView.OnNaviga
         } catch (ExecutionException | InterruptedException e) {
             return null;
         }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        item.setCheckable(true);
-        item.setChecked(true);
-
-        if (id == R.id.nav_1) {
-            Intent intent = new Intent(Ventas.this, Clientes.class);
-            intent.putExtra("codCliente",
-                    Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-            startActivity(intent);
-        } else if (id == R.id.nav_2) {
-            Intent intent = new Intent(Ventas.this, Productos.class);
-            intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-            startActivity(intent);
-        } else if (id == R.id.nav_3) {
-            Intent intent = new Intent(Ventas.this, Ventas.class);
-            intent.putExtra("codCliente", intentVentas.getExtras().get("codCliente").toString());
-            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-            startActivity(intent);
-        } else if (id == R.id.nav_4) {
-            Intent intent = new Intent(Ventas.this, CarritoCompras.class);
-            intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-            intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-            startActivity(intent);
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private void updateTable() {

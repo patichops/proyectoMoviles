@@ -25,14 +25,10 @@ public class AccionesProductos extends AppCompatActivity {
     private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
     private Intent intentAcciones;
     private Producto productoSel;
-    private EditText codigo;
-    private TextView fecha;
-    private EditText nombre;
-    private EditText precio;
-    private EditText cantidad;
+    private TextView fecha, nombre;
+    private EditText precio, cantidad, codigo;
     private Switch activo;
-    private Button volver;
-    private Button guardar;
+    private Button volver, guardar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +90,11 @@ public class AccionesProductos extends AppCompatActivity {
     }
 
     private void guardarProducto() {
+        if (validar()){
+            Toast.makeText(this,"Ingrese los campos correctamente",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int stock = Integer.parseInt(this.cantidad.getText().toString());
         int idProducto = 0;
         String nombre = this.nombre.getText().toString();
@@ -130,6 +131,11 @@ public class AccionesProductos extends AppCompatActivity {
     }
 
     private void actualizarProducto() {
+        if (validar()){
+            Toast.makeText(this,"Ingrese los campos correctamente",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int stock = Integer.parseInt(this.cantidad.getText().toString());
         int idProducto = Integer.parseInt(this.codigo.getText().toString());
         String nombre = this.nombre.getText().toString();
@@ -182,5 +188,22 @@ public class AccionesProductos extends AppCompatActivity {
                     Integer.parseInt(intentAcciones.getExtras().get("codCliente").toString()));
             intent.putExtra("rol", intentAcciones.getExtras().get("rol").toString());
             startActivity(intent);
+    }
+
+    public boolean validar(){
+        if(nombre.getText().toString().isEmpty())
+            return true;
+        else if(codigo.getText().toString().isEmpty())
+            return true;
+        else if(nombre.getText().toString().isEmpty())
+            return true;
+        else if(precio.getText().toString().isEmpty())
+            return true;
+        else if(cantidad.getText().toString().isEmpty())
+            return true;
+        else if(!activo.isChecked())
+            return true;
+        else
+            return false;
     }
 }

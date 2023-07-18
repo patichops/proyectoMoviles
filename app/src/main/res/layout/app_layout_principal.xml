@@ -20,11 +20,50 @@
         android:popupTheme="@style/Widget.Material3.PopupMenu.Overflow"
         tools:targetApi="lollipop">
 
-        <Button
-            android:id="@+id/btMenuFlotante"
+        <TextView
+            android:id="@+id/btMenuCerrarSesion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Menu"/>
+            android:text="Logout"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/btHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mis Facturas"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/btMenuClientes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clientes"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/btMenuProductos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Productos"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/btMenuVentas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ventas"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_margin="10dp"/>
 
     </Toolbar>
 

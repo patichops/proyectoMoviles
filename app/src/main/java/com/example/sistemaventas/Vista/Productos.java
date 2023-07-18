@@ -31,6 +31,9 @@ public class Productos extends AppCompatActivity {
     private Button buttonCliente, crear,anterior, siguiente;
     private int currentPage = 1, pageSize = 5, totalPages;
 
+    //menu
+    private TextView logout, clientes, productos, ventas, home;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,7 @@ public class Productos extends AppCompatActivity {
         crear = findViewById(R.id.buttonCrearProducto);
         anterior = findViewById(R.id.buttonAnterior);
         siguiente = findViewById(R.id.buttonSiguiente);
+        habilitarMenu();
 
         totalPages = (int) Math.ceil((double) listaProductos.size() / pageSize);
         updateTable();
@@ -81,6 +85,69 @@ public class Productos extends AppCompatActivity {
         });
     }
 
+    private void habilitarMenu() {
+        //Habilitar el menu
+        logout = findViewById(R.id.btMenuCerrarSesion);
+        clientes = findViewById(R.id.btMenuClientes);
+        productos = findViewById(R.id.btMenuProductos);
+        ventas = findViewById(R.id.btMenuVentas);
+        home = findViewById(R.id.btHome);
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Productos.this, Ventas.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
+                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+                startActivity(intent);
+                Productos.this.finish();
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Productos.this, Login.class);
+                startActivity(intent);
+                Productos.this.finish();
+            }
+        });
+        clientes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Productos.this, Clientes.class);
+                intent.putExtra("codCliente",
+                        Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
+                startActivity(intent);
+                Productos.this.finish();
+            }
+        });
+        productos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Productos.this, Productos.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
+                startActivity(intent);
+                Productos.this.finish();
+            }
+        });
+        ventas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Productos.this, CarritoCompras.class);
+                intent.putExtra("codCliente", Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
+                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+                startActivity(intent);
+                Productos.this.finish();
+            }
+        });
+    }
+
     public List<Producto> llenarDatos(){
         List<Producto> resp;
         try {
@@ -116,6 +183,7 @@ public class Productos extends AppCompatActivity {
                                 Intent intent = new Intent(Productos.this, Productos.class);
                                 intent.putExtra("codCliente",
                                         Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
                                 intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
                                 startActivity(intent);
                             }
@@ -135,6 +203,7 @@ public class Productos extends AppCompatActivity {
         Intent intent = new Intent(this, AccionesProductos.class);
         intent.putExtra("codCliente",
                 Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+        intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
         intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
         intent.putExtra("codigo", id);
         startActivity(intent);
@@ -144,6 +213,7 @@ public class Productos extends AppCompatActivity {
         Intent intent = new Intent(this, Clientes.class);
         intent.putExtra("codCliente",
                 Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+        intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
         intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
         startActivity(intent);
     }

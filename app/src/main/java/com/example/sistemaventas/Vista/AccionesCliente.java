@@ -24,10 +24,13 @@ public class AccionesCliente extends AppCompatActivity {
     private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
     private Cliente usuario;
     private Intent intentAcciones;
-
-    private EditText nombre;
     private TextView cedula,textVCedula;
-    private EditText editCedula,correo,direccion,telefono,contrasenia;
+    private EditText editCedula,
+            correo,
+            direccion,
+            telefono,
+            contrasenia,
+            nombre;
     private Button volver,guardar;
 
     @Override
@@ -45,7 +48,7 @@ public class AccionesCliente extends AppCompatActivity {
         volver = findViewById(R.id.buttonVolver);
         guardar = findViewById(R.id.buttonGuardarCliente);
         editCedula = findViewById(R.id.editTextCedula);
-        textVCedula = findViewById(R.id.textView5);
+        textVCedula = findViewById(R.id.textView1);
 
         if (intentAcciones.getExtras() != null) {
 
@@ -58,6 +61,7 @@ public class AccionesCliente extends AppCompatActivity {
 
             nombre.setText(usuario.nombre +" " +  usuario.apellido);
             cedula.setText(usuario.cedula);
+            editCedula.setText(usuario.cedula);
             correo.setText(usuario.correo);
             direccion.setText(usuario.direccion);
             telefono.setText(usuario.telefono);
@@ -99,6 +103,11 @@ public class AccionesCliente extends AppCompatActivity {
     }
 
     private void guardarCliente() {
+        if (validar()){
+            Toast.makeText(this,"Ingrese los campos correctamente",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String contrasenia = this.contrasenia.getText().toString();
         String telefono = this.telefono.getText().toString();
         String apellido = this.nombre.getText().toString()
@@ -152,6 +161,10 @@ public class AccionesCliente extends AppCompatActivity {
 
     }
     private void actualizarCliente() {
+        if (validar()){
+            Toast.makeText(this,"Ingrese los campos correctamente",Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String contrasenia = this.contrasenia.getText().toString();
         String telefono = this.telefono.getText().toString();
@@ -166,6 +179,7 @@ public class AccionesCliente extends AppCompatActivity {
 
         String direccion = this.direccion.getText().toString();
         boolean activo = usuario.activo;
+        editCedula.setText(usuario.cedula);
         String cedula = usuario.cedula;
         String correo = this.correo.getText().toString();
         String rol = usuario.rol;
@@ -204,7 +218,6 @@ public class AccionesCliente extends AppCompatActivity {
             Toast.makeText(AccionesCliente.this, "Error desconocido: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     private void volverAtras() {
         if (intentAcciones.getExtras() != null){
             Intent intent = new Intent(this, Clientes.class);
@@ -218,8 +231,6 @@ public class AccionesCliente extends AppCompatActivity {
         }
 
     }
-
-
     public Cliente traerCliente(int codigo){
         Cliente cl = new Cliente();
 
@@ -230,5 +241,21 @@ public class AccionesCliente extends AppCompatActivity {
         }
 
         return cl;
+    }
+    public boolean validar(){
+        if(nombre.getText().toString().isEmpty())
+            return true;
+        else if(editCedula.getText().toString().isEmpty() || editCedula.getText().toString().length() != 10)
+            return true;
+        else if(correo.getText().toString().isEmpty())
+            return true;
+        else if(direccion.getText().toString().isEmpty())
+            return true;
+        else if(telefono.getText().toString().isEmpty())
+            return true;
+        else if(contrasenia.getText().toString().isEmpty() || contrasenia.getText().toString().length() < 4)
+            return true;
+        else
+            return false;
     }
 }
