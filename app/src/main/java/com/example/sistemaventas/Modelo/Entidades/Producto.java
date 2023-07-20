@@ -8,6 +8,8 @@ public class Producto {
     public boolean esActivo;
     public String fechaActivo;
 
+    public String imagen;
+
     public Producto(){}
     public Producto(int stock, int idProducto,
                     String nombre, double precio,

@@ -2,6 +2,7 @@ package com.example.sistemaventas.Vista;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,7 +23,8 @@ import java.util.concurrent.ExecutionException;
 
 public class AccionesProductos extends AppCompatActivity {
 
-    private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
+    //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
+    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
     private Intent intentAcciones;
     private Producto productoSel;
     private TextView fecha, nombre;
@@ -36,8 +38,10 @@ public class AccionesProductos extends AppCompatActivity {
         setContentView(R.layout.activity_acciones_productos);
         intentAcciones = this.getIntent();
 
+        verificarUsuario(this, intentAcciones);
+
         codigo = findViewById(R.id.editTextCodigo);
-        fecha = findViewById(R.id.textViewFecha);
+        //fecha = findViewById(R.id.textViewFecha);
         nombre = findViewById(R.id.editTextNombreProducto);
         precio = findViewById(R.id.editTextPrecio);
         cantidad = findViewById(R.id.editTextStock);
@@ -87,6 +91,19 @@ public class AccionesProductos extends AppCompatActivity {
                 volverAtras();
             }
         });
+    }
+
+    private void verificarUsuario(Context pestaña, Intent intent){
+        if (intent.getExtras().get("rol").toString().equals("usuario")){
+            Intent ventas = new Intent(pestaña, Ventas.class);
+            ventas.putExtra("codCliente", Integer.parseInt(intent.getExtras().get("codCliente").toString()));
+            ventas.putExtra("nombre", intent.getExtras().get("nombre").toString());
+            ventas.putExtra("rol", intent.getExtras().get("rol").toString());
+            startActivity(ventas);
+            this.finish();
+        } else {
+            Toast.makeText(pestaña,"Bienvenido usuario ADMINISTRADOR",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void guardarProducto() {

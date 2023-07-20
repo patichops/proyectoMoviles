@@ -21,7 +21,8 @@ import java.util.concurrent.ExecutionException;
 
 public class Login extends AppCompatActivity {
 
-    String url = "http://www.sistemaventasepe.somee.com/api/";
+//    private static final String url = "https://www.sistemaventasepe.somee.com/api/";
+    private static final String url = "http://dbventas-facturas-movil.somee.com/api/";
     private TextView registrarse;
     private EditText cedula;
     private EditText clave;

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fondos4"
+    android:backgroundTint="@color/fondos4"
     tools:context=".Vista.AccionesProductos">
 
     <TextView
@@ -11,35 +13,23 @@
         android:layout_width="181dp"
         android:layout_height="41dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:text="Datos del Producto"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewFecha"
-        android:layout_width="266dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="80dp"
-        android:paddingEnd="10dp"
-        android:text="ejemplo"
-        android:textAlignment="textEnd"
+        android:textColor="@color/fondos6"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="365dp"
-        android:layout_height="450dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,6 +41,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Codigo"
+                android:textColor="@color/fondos5"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 android:visibility="visible" />
 
             <EditText
@@ -59,14 +52,17 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Codigo"
-                android:inputType="text"
+                android:textColor="@color/fondos5"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Producto" />
+                android:text="Producto"
+                android:textColor="@color/fondos5"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/editTextNombreProducto"
@@ -80,7 +76,10 @@
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Precio" />
+                android:text="Precio"
+                android:textColor="@color/fondos5"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/editTextPrecio"
@@ -94,7 +93,10 @@
                 android:id="@+id/textView6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cantidad disponible" />
+                android:text="Cantidad disponible"
+                android:textColor="@color/fondos5"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/editTextStock"
@@ -108,7 +110,10 @@
                 android:id="@+id/switchActivo"
                 android:layout_width="match_parent"
                 android:layout_height="43dp"
-                android:text="Activo" />
+                android:text="Activo"
+                android:textColor="@color/fondos5"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
@@ -116,22 +121,37 @@
 
     <Button
         android:id="@+id/buttonGuardarProducto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="50dp"
         android:layout_marginBottom="52dp"
+        android:backgroundTint="@color/button2"
+        android:drawableLeft="@android:drawable/ic_menu_save"
         android:text="Guardar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonVolver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="64dp"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="50dp"
         android:layout_marginBottom="52dp"
+        android:backgroundTint="@color/button2"
+        android:drawableLeft="@android:drawable/ic_menu_revert"
         android:text="Volver"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="156dp"
+        android:layout_height="76dp"
+        android:layout_marginEnd="112dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/peo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

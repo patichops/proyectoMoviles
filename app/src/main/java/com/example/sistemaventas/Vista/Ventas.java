@@ -10,7 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,7 +38,8 @@ import java.util.concurrent.ExecutionException;
 
 public class Ventas extends AppCompatActivity {
 
-    String url = "http://www.sistemaventasepe.somee.com/api/";
+    //private static final String url = "https://www.sistemaventasepe.somee.com/api/";
+    private static final String url = "http://dbventas-facturas-movil.somee.com/api/";
 
     private TableLayout tablaVentas;
     private List<Factura> listaVentas;
@@ -122,33 +125,39 @@ public class Ventas extends AppCompatActivity {
         ventas = findViewById(R.id.btMenuVentas);
         home = findViewById(R.id.btHome);
 
+        if (intentVentas.getExtras().get("rol").toString().equals("usuario")){
+            clientes.setVisibility(View.GONE);
+            productos.setVisibility(View.GONE);
+        } else {
+            clientes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Ventas.this, Clientes.class);
+                    intent.putExtra("codCliente",
+                            Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    Ventas.this.finish();
+                }
+            });
+            productos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Ventas.this, Productos.class);
+                    intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
+                    intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
+                    intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
+                    startActivity(intent);
+                    Ventas.this.finish();
+                }
+            });
+        }
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Ventas.this, Login.class);
-                startActivity(intent);
-                Ventas.this.finish();
-            }
-        });
-        clientes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Ventas.this, Clientes.class);
-                intent.putExtra("codCliente",
-                        Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
-                startActivity(intent);
-                Ventas.this.finish();
-            }
-        });
-        productos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Ventas.this, Productos.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentVentas.getExtras().get("codCliente").toString()));
-                intent.putExtra("nombre", intentVentas.getExtras().get("nombre").toString());
-                intent.putExtra("rol", intentVentas.getExtras().get("rol").toString());
                 startActivity(intent);
                 Ventas.this.finish();
             }
@@ -221,6 +230,38 @@ public class Ventas extends AppCompatActivity {
 
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, listaVentas.size());
+
+        TableRow encabezado = new TableRow(this);
+
+        TextView h1 = new TextView(this);
+        h1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.5f));
+        h1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h1.setText("Nro:");
+        h1.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h1);
+
+        TextView h2 = new TextView(this);
+        h2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 3f));
+        h2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h2.setText("Fecha de Emision");
+        h2.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h2);
+
+        TextView h3 = new TextView(this);
+        h3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+        h3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h3.setText("Total");
+        h3.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h3);
+
+        TextView h4 = new TextView(this);
+        h4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+        h4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h4.setText("");
+        h4.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h4);
+
+        tablaVentas.addView(encabezado);
 
         for (int i = start; i < end; i++) {
             Factura fac = listaVentas.get(i);

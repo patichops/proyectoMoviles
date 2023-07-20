@@ -9,7 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.example.sistemaventas.Controllers.ValidadorCampos;
 import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Cliente;
 import com.example.sistemaventas.R;
@@ -21,7 +24,9 @@ import java.util.concurrent.ExecutionException;
 
 public class AccionesCliente extends AppCompatActivity {
 
-    private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
+    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
+    //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
+
     private Cliente usuario;
     private Intent intentAcciones;
     private TextView cedula,textVCedula;
@@ -47,7 +52,7 @@ public class AccionesCliente extends AppCompatActivity {
         contrasenia = findViewById(R.id.editTextContraseña);
         volver = findViewById(R.id.buttonVolver);
         guardar = findViewById(R.id.buttonGuardarCliente);
-        editCedula = findViewById(R.id.editTextCedula);
+        editCedula = findViewById(R.id.textViewCedula);
         textVCedula = findViewById(R.id.textView1);
 
         if (intentAcciones.getExtras() != null) {
@@ -104,7 +109,6 @@ public class AccionesCliente extends AppCompatActivity {
 
     private void guardarCliente() {
         if (validar()){
-            Toast.makeText(this,"Ingrese los campos correctamente",Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -243,18 +247,35 @@ public class AccionesCliente extends AppCompatActivity {
         return cl;
     }
     public boolean validar(){
-        if(nombre.getText().toString().isEmpty())
+        if(nombre.getText().toString().isEmpty() || !nombre.getText().toString().contains(" ")){
+            Toast.makeText(this,"Nombre no valida.",Toast.LENGTH_SHORT).show();
             return true;
-        else if(editCedula.getText().toString().isEmpty() || editCedula.getText().toString().length() != 10)
+        }
+        else if(editCedula.getText().toString().isEmpty()
+                || editCedula.getText().toString().length() != 10
+                || !ValidadorCampos.validarCedula(editCedula.getText().toString())){
+            Toast.makeText(this,"Cedula valida",Toast.LENGTH_SHORT).show();
             return true;
-        else if(correo.getText().toString().isEmpty())
+        }
+        else if(correo.getText().toString().isEmpty() &&
+                !ValidadorCampos.validarCorreoElectronico(correo.getText().toString())){
+            Toast.makeText(this,"Correo no valida",Toast.LENGTH_SHORT).show();
             return true;
-        else if(direccion.getText().toString().isEmpty())
+        }
+        else if(direccion.getText().toString().isEmpty()){
+            Toast.makeText(this,"Direccion no valida",Toast.LENGTH_SHORT).show();
             return true;
-        else if(telefono.getText().toString().isEmpty())
+        }
+        else if(telefono.getText().toString().isEmpty()){
+            Toast.makeText(this,"Telefono no valido",Toast.LENGTH_SHORT).show();
             return true;
-        else if(contrasenia.getText().toString().isEmpty() || contrasenia.getText().toString().length() < 4)
+        }
+        else if(contrasenia.getText().toString().isEmpty()
+                || contrasenia.getText().toString().length() < 4
+                || !ValidadorCampos.validarContraseña(contrasenia.getText().toString())){
+            Toast.makeText(this,"Contraseña no valida",Toast.LENGTH_SHORT).show();
             return true;
+        }
         else
             return false;
     }

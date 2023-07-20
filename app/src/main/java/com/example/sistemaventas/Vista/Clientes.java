@@ -3,8 +3,10 @@ package com.example.sistemaventas.Vista;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +25,8 @@ import java.util.concurrent.ExecutionException;
 
 public class Clientes extends AppCompatActivity {
 
-    String url = "http://www.sistemaventasepe.somee.com/api/";
+    private static final String url = "http://dbventas-facturas-movil.somee.com/api/";
+//    private static final String url = "https://www.sistemaventasepe.somee.com/api/";
     private TableLayout tablaClientes;
     private List<Cliente> listaClientes;
     private Intent intentCliente;
@@ -40,8 +43,9 @@ public class Clientes extends AppCompatActivity {
         setContentView(R.layout.activity_clientes);
         intentCliente = this.getIntent();
 
-        habilitarMenu();
+        verificarUsuario(this, intentCliente);
 
+        habilitarMenu();
         listaClientes = llenarDatos();
         tablaClientes = findViewById(R.id.tableLayoutClientes);
         anterior = findViewById(R.id.buttonAnterior);
@@ -79,6 +83,19 @@ public class Clientes extends AppCompatActivity {
         });
     }
 
+    private void verificarUsuario(Context pestaña, Intent intent){
+        if (intent.getExtras().get("rol").toString().equals("usuario")){
+            Intent ventas = new Intent(pestaña, Ventas.class);
+            ventas.putExtra("codCliente", Integer.parseInt(intent.getExtras().get("codCliente").toString()));
+            ventas.putExtra("nombre", intent.getExtras().get("nombre").toString());
+            ventas.putExtra("rol", intent.getExtras().get("rol").toString());
+            startActivity(ventas);
+            this.finish();
+        } else {
+            Toast.makeText(pestaña,"Bienvenido usuario ADMINISTRADOR",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void habilitarMenu() {
         //Habilitar el menu
         logout = findViewById(R.id.btMenuCerrarSesion);
@@ -86,6 +103,35 @@ public class Clientes extends AppCompatActivity {
         productos = findViewById(R.id.btMenuProductos);
         ventas = findViewById(R.id.btMenuVentas);
         home = findViewById(R.id.btHome);
+
+        if (intentCliente.getExtras().get("rol").toString().equals("usuario")){
+            clientes.setVisibility(View.GONE);
+            productos.setVisibility(View.GONE);
+        } else {
+            clientes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Clientes.this, Clientes.class);
+                    intent.putExtra("codCliente",
+                            Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentCliente.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    Clientes.this.finish();
+                }
+            });
+            productos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Clientes.this, Productos.class);
+                    intent.putExtra("codCliente", Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentCliente.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    Clientes.this.finish();
+                }
+            });
+        }
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,29 +152,7 @@ public class Clientes extends AppCompatActivity {
                 Clientes.this.finish();
             }
         });
-        clientes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Clientes.this, Clientes.class);
-                intent.putExtra("codCliente",
-                        Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentCliente.getExtras().get("nombre").toString());
-                startActivity(intent);
-                Clientes.this.finish();
-            }
-        });
-        productos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Clientes.this, Productos.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentCliente.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentCliente.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentCliente.getExtras().get("nombre").toString());
-                startActivity(intent);
-                Clientes.this.finish();
-            }
-        });
+
         ventas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,6 +241,50 @@ public class Clientes extends AppCompatActivity {
 
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, listaClientes.size());
+
+        TableRow encabezado = new TableRow(this);
+
+        TextView h1 = new TextView(this);
+        h1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h1.setText("Cedula");
+        h1.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h1);
+
+        TextView h2 = new TextView(this);
+        h2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h2.setText("Nombre");
+        h2.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h2);
+
+        TextView h3 = new TextView(this);
+        h3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h3.setText("Direccion");
+        h3.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h3);
+
+        TextView h4 = new TextView(this);
+        h4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h4.setText("Telefono");
+        h4.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h4);
+
+        TextView campo5 = new TextView(this);
+        campo5.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        campo5.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        campo5.setText("");
+        encabezado.addView(campo5);
+
+        TextView campo6 = new TextView(this);
+        campo6.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        campo6.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        campo6.setText("");
+        encabezado.addView(campo6);
+
+        tablaClientes.addView(encabezado);
 
         for (int i = start; i < end; i++) {
             Cliente fac = listaClientes.get(i);

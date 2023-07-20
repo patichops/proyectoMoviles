@@ -32,7 +32,8 @@ import java.util.concurrent.ExecutionException;
 
 public class RealizarVenta extends AppCompatActivity {
 
-    private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
+    //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
+    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
 
     private TextView nombre,
             direccion,
@@ -76,6 +77,7 @@ public class RealizarVenta extends AppCompatActivity {
 
         int verificador = Integer.parseInt(
                 intentRealizarVenta.getExtras().get("verificador").toString());
+
         if (verificador > 0){
             comprar.setVisibility(View.GONE);
             cancelar.setText("ACEPTAR");
@@ -156,8 +158,6 @@ public class RealizarVenta extends AppCompatActivity {
                 }
             });
         }
-
-
     }
 
     private void habilitarMenu() {
@@ -168,6 +168,34 @@ public class RealizarVenta extends AppCompatActivity {
         ventas = findViewById(R.id.btMenuVentas);
         home = findViewById(R.id.btHome);
 
+        if (intentRealizarVenta.getExtras().get("rol").toString().equals("usuario")){
+            clientes.setVisibility(View.GONE);
+            productos.setVisibility(View.GONE);
+        } else {
+            clientes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RealizarVenta.this, Clientes.class);
+                    intent.putExtra("codCliente",
+                            Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    RealizarVenta.this.finish();
+                }
+            });
+            productos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RealizarVenta.this, Productos.class);
+                    intent.putExtra("codCliente", Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    RealizarVenta.this.finish();
+                }
+            });
+        }
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,29 +216,7 @@ public class RealizarVenta extends AppCompatActivity {
                 RealizarVenta.this.finish();
             }
         });
-        clientes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RealizarVenta.this, Clientes.class);
-                intent.putExtra("codCliente",
-                        Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
-                startActivity(intent);
-                RealizarVenta.this.finish();
-            }
-        });
-        productos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RealizarVenta.this, Productos.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
-                startActivity(intent);
-                RealizarVenta.this.finish();
-            }
-        });
+
         ventas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

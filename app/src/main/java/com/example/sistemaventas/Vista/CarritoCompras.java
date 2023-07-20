@@ -1,10 +1,8 @@
 package com.example.sistemaventas.Vista;
 
-import androidx.annotation.GravityInt;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -15,13 +13,10 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -39,7 +34,8 @@ import java.util.concurrent.ExecutionException;
 
 public class CarritoCompras extends AppCompatActivity {
 
-    private static final String URL = "http://www.sistemaventasepe.somee.com/api/";
+    //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
+    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
     private List<String[]> carrito;
     private float totalApagar;
 
@@ -114,6 +110,35 @@ public class CarritoCompras extends AppCompatActivity {
         ventas = findViewById(R.id.btMenuVentas);
         home = findViewById(R.id.btHome);
 
+        if (intentComprar.getExtras().get("rol").toString().equals("usuario")){
+            clientes.setVisibility(View.GONE);
+            productos.setVisibility(View.GONE);
+        } else {
+            clientes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(CarritoCompras.this, Clientes.class);
+                    intent.putExtra("codCliente",
+                            Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    CarritoCompras.this.finish();
+                }
+            });
+            productos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(CarritoCompras.this, Productos.class);
+                    intent.putExtra("codCliente", Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    CarritoCompras.this.finish();
+                }
+            });
+        }
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,29 +147,7 @@ public class CarritoCompras extends AppCompatActivity {
                 CarritoCompras.this.finish();
             }
         });
-        clientes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CarritoCompras.this, Clientes.class);
-                intent.putExtra("codCliente",
-                        Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
-                startActivity(intent);
-                CarritoCompras.this.finish();
-            }
-        });
-        productos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CarritoCompras.this, Productos.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
-                startActivity(intent);
-                CarritoCompras.this.finish();
-            }
-        });
+
         ventas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -20,7 +20,6 @@
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#6BDCB4"
         android:popupTheme="@style/Widget.Material3.PopupMenu.Overflow"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="94dp"
@@ -30,15 +29,15 @@
             android:id="@+id/buttonCancelar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancelar"
-            android:layout_marginEnd="15dp"/>
+            android:layout_marginEnd="15dp"
+            android:text="Cancelar" />
 
         <Button
             android:id="@+id/buttonContinuar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Continuar"
-            android:layout_marginEnd="15dp"/>
+            android:layout_marginEnd="15dp"
+            android:text="Continuar" />
 
         <Button
             android:id="@+id/buttonMostrarCarrito"

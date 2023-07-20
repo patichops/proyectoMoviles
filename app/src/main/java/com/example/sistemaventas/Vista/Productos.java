@@ -3,8 +3,10 @@ package com.example.sistemaventas.Vista;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sistemaventas.Modelo.Entidades.Cliente;
 import com.example.sistemaventas.Modelo.Responses.ApiHandler;
 import com.example.sistemaventas.Modelo.Entidades.Producto;
 import com.example.sistemaventas.R;
@@ -23,8 +26,10 @@ import java.util.concurrent.ExecutionException;
 
 public class Productos extends AppCompatActivity {
 
-    String url = "http://www.sistemaventasepe.somee.com/api/";
+//    private static final String url = "https://www.sistemaventasepe.somee.com/api/";
+    private static final String url = "http://dbventas-facturas-movil.somee.com/api/";
 
+    // https://localhost:7009/api/Productos
     private TableLayout tablaProductos;
     private List<Producto> listaProductos;
     private Intent intentProductos;
@@ -39,6 +44,9 @@ public class Productos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_productos);
         intentProductos = this.getIntent();
+
+        verificarUsuario(this, intentProductos);
+
         listaProductos = llenarDatos();
         tablaProductos = findViewById(R.id.tableLayoutProductos);
         crear = findViewById(R.id.buttonCrearProducto);
@@ -85,6 +93,19 @@ public class Productos extends AppCompatActivity {
         });
     }
 
+    private void verificarUsuario(Context pestaña, Intent intent){
+        if (intent.getExtras().get("rol").toString().equals("usuario")){
+            Intent ventas = new Intent(pestaña, Ventas.class);
+            ventas.putExtra("codCliente", Integer.parseInt(intent.getExtras().get("codCliente").toString()));
+            ventas.putExtra("nombre", intent.getExtras().get("nombre").toString());
+            ventas.putExtra("rol", intent.getExtras().get("rol").toString());
+            startActivity(ventas);
+            this.finish();
+        } else {
+            Toast.makeText(pestaña,"Bienvenido usuario ADMINISTRADOR",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void habilitarMenu() {
         //Habilitar el menu
         logout = findViewById(R.id.btMenuCerrarSesion);
@@ -92,6 +113,35 @@ public class Productos extends AppCompatActivity {
         productos = findViewById(R.id.btMenuProductos);
         ventas = findViewById(R.id.btMenuVentas);
         home = findViewById(R.id.btHome);
+
+        if (intentProductos.getExtras().get("rol").toString().equals("usuario")){
+            clientes.setVisibility(View.GONE);
+            productos.setVisibility(View.GONE);
+        } else {
+            clientes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Productos.this, Clientes.class);
+                    intent.putExtra("codCliente",
+                            Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    Productos.this.finish();
+                }
+            });
+            productos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Productos.this, Productos.class);
+                    intent.putExtra("codCliente", Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
+                    intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
+                    intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
+                    startActivity(intent);
+                    Productos.this.finish();
+                }
+            });
+        }
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,29 +162,7 @@ public class Productos extends AppCompatActivity {
                 Productos.this.finish();
             }
         });
-        clientes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Productos.this, Clientes.class);
-                intent.putExtra("codCliente",
-                        Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
-                startActivity(intent);
-                Productos.this.finish();
-            }
-        });
-        productos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Productos.this, Productos.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentProductos.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentProductos.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentProductos.getExtras().get("nombre").toString());
-                startActivity(intent);
-                Productos.this.finish();
-            }
-        });
+
         ventas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,6 +251,50 @@ public class Productos extends AppCompatActivity {
 
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, listaProductos.size());
+
+        TableRow encabezado = new TableRow(this);
+
+        TextView h1 = new TextView(this);
+        h1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h1.setText("Codigo");
+        h1.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h1);
+
+        TextView h2 = new TextView(this);
+        h2.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h2.setText("Producto");
+        h2.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h2);
+
+        TextView h3 = new TextView(this);
+        h3.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h3.setText("Precio");
+        h3.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h3);
+
+        TextView h4 = new TextView(this);
+        h4.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        h4.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        h4.setText("Stock");
+        h4.setTypeface(null, Typeface.BOLD);
+        encabezado.addView(h4);
+
+        TextView campo5 = new TextView(this);
+        campo5.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        campo5.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        campo5.setText("");
+        encabezado.addView(campo5);
+
+        TextView campo6 = new TextView(this);
+        campo6.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        campo6.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        campo6.setText("");
+        encabezado.addView(campo6);
+
+        tablaProductos.addView(encabezado);
 
         for(int i = start; i < end; i++){
             Producto fac = listaProductos.get(i);
