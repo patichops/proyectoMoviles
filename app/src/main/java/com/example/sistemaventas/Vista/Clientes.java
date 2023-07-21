@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Clientes extends AppCompatActivity {
 
-    private static final String url = "http://dbventas-facturas-movil.somee.com/api/";
+    private static final String url = "https://dbventas-facturas-movil.somee.com/api/";
 //    private static final String url = "https://www.sistemaventasepe.somee.com/api/";
     private TableLayout tablaClientes;
     private List<Cliente> listaClientes;

@@ -35,10 +35,9 @@ import java.util.concurrent.ExecutionException;
 public class CarritoCompras extends AppCompatActivity {
 
     //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
-    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
+    private static final String URL = "https://dbventas-facturas-movil.somee.com/api/";
     private List<String[]> carrito;
     private float totalApagar;
-
 
     private GridView gridViewProductos;
     private Button cancelar, continuar, mostrarCarrito;
@@ -60,6 +59,24 @@ public class CarritoCompras extends AppCompatActivity {
         total = findViewById(R.id.textViewTotal);
         totalApagar = 0;
         total.setText("Total: " + totalApagar);
+
+        if (intentComprar.getExtras().get("carrito") != null){
+            ArrayList<ArrayList<String>> listaExtra = (ArrayList<ArrayList<String>>) intentComprar.getExtras().get("carrito");
+            carrito = new ArrayList<>();
+            for (int i = 0; i < listaExtra.size(); i++) {
+                carrito.add(new String[] {
+                        listaExtra.get(i).get(0),
+                        listaExtra.get(i).get(1),
+                        listaExtra.get(i).get(2),
+                        listaExtra.get(i).get(3),
+                        listaExtra.get(i).get(4),
+                        listaExtra.get(i).get(5)
+                });
+            }
+
+            totalApagar = Float.parseFloat(intentComprar.getExtras().get("subtotal").toString());
+            total.setText("Total: " + totalApagar);
+        }
 
         habilitarMenu();
 
@@ -97,7 +114,7 @@ public class CarritoCompras extends AppCompatActivity {
         mostrarCarrito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mostrarCarrito();
+                mostrarCarrito(null);
             }
         });
     }
@@ -151,12 +168,7 @@ public class CarritoCompras extends AppCompatActivity {
         ventas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CarritoCompras.this, CarritoCompras.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentComprar.getExtras().get("codCliente").toString()));
-                intent.putExtra("rol", intentComprar.getExtras().get("rol").toString());
-                intent.putExtra("nombre", intentComprar.getExtras().get("nombre").toString());
-                startActivity(intent);
-                CarritoCompras.this.finish();
+                _cancelar();
             }
         });
 
@@ -172,6 +184,7 @@ public class CarritoCompras extends AppCompatActivity {
             }
         });
     }
+
     public void _continuar(){
         if (carrito == null){
             Toast.makeText(CarritoCompras.this, "No ha seleccionado ningun producto.", Toast.LENGTH_SHORT).show();
@@ -193,22 +206,15 @@ public class CarritoCompras extends AppCompatActivity {
         }
     }
 
-    public void mostrarCarrito(){
+    public void mostrarCarrito(AlertDialog al){
 
-        if (carrito == null){
+        if (carrito == null || carrito.size() == 0){
             Toast.makeText(CarritoCompras.this,"Tu carrito está vacio.",Toast.LENGTH_SHORT).show();
         } else {
-            View rl = tablaMostrarCarrito();
-            AlertDialog.Builder bd = new AlertDialog.Builder(this);
-            bd
-                    .setView(rl)
-                    .setNegativeButton("CERRAR", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-            bd.create();
-            bd.show();
+            if (al != null)
+                al.dismiss();
+
+            tablaMostrarCarrito().show();
         }
     }
 
@@ -306,7 +312,7 @@ public class CarritoCompras extends AppCompatActivity {
         alert.show();
     }
 
-    public View tablaMostrarCarrito(){
+    public AlertDialog tablaMostrarCarrito(){
         LinearLayout rl = new LinearLayout(this);
         rl.setPadding(5,5,5,5);
         TableLayout tl = new TableLayout(this);
@@ -427,13 +433,21 @@ public class CarritoCompras extends AppCompatActivity {
                 }
             });
             tr.addView(quitarProducto);
-
             tl.addView(tr);
         }
 
         rl.addView(tl);
 
-        return rl;
+        AlertDialog.Builder bd = new AlertDialog.Builder(this);
+        bd.setView(rl)
+                .setNegativeButton("CERRAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        return bd.create();
     }
 
     private void accionAgregarProducto(int idProducto, String nombre, double precio, int cantidad, int max){
@@ -478,6 +492,7 @@ public class CarritoCompras extends AppCompatActivity {
 
         Toast.makeText(CarritoCompras.this, "Agregado al carrito.", Toast.LENGTH_SHORT).show();
         total.setText("Total: " + totalApagar);
+        mostrarCarrito(null);
     }
 
     private void accionQuitarProductos(String nombre){
@@ -492,6 +507,7 @@ public class CarritoCompras extends AppCompatActivity {
             }
             total.setText("Total: " + totalApagar);
             Toast.makeText(CarritoCompras.this, "Producto quitado.", Toast.LENGTH_SHORT).show();
+            mostrarCarrito(null);
         } else {
             Toast.makeText(CarritoCompras.this, "El carrito se encuentra vacio.", Toast.LENGTH_SHORT).show();
         }

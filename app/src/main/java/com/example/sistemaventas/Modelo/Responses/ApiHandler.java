@@ -239,8 +239,13 @@ public class ApiHandler {
                 double precio = Double.parseDouble(data.getString("precio"));
                 boolean esActivo = Boolean.parseBoolean(data.getString("esActivo"));
                 String fechaActivo = data.getString("fechaRegistro");
+                String imagen;
+                if (data.getString("imagen") == null)
+                    imagen = "";
+                else
+                    imagen = data.getString("imagen");
 
-                Producto p = new Producto(stock, idProducto, nombre, precio, esActivo, fechaActivo);
+                Producto p = new Producto(stock, idProducto, nombre, precio, esActivo, fechaActivo, imagen);
                 producto = p;
 
             } catch (IOException | JSONException e) {
@@ -277,9 +282,14 @@ public class ApiHandler {
                     double precio = Double.parseDouble(jsonObject.getString("precio"));
                     boolean esActivo = Boolean.parseBoolean(jsonObject.getString("esActivo"));
                     String fechaActivo = jsonObject.getString("fechaRegistro");
+                    String imagen;
+                    if (jsonObject.getString("imagen") == null)
+                        imagen = "";
+                    else
+                        imagen = jsonObject.getString("imagen");
 
                     Producto cl = new Producto(
-                            stock, idProducto, nombre, precio, esActivo, fechaActivo
+                            stock, idProducto, nombre, precio, esActivo, fechaActivo, imagen
                     );
                     personList.add(cl);
                 }
@@ -330,9 +340,14 @@ public class ApiHandler {
                     double precio = Double.parseDouble(jsonObject.getString("precio"));
                     boolean esActivo = Boolean.parseBoolean(jsonObject.getString("esActivo"));
                     String fechaActivo = jsonObject.getString("fechaRegistro");
+                    String imagen;
+                    if (jsonObject.getString("imagen") == null)
+                        imagen = "";
+                    else
+                        imagen = jsonObject.getString("imagen");
 
                     Producto cl = new Producto(
-                            stock, idProducto, nombre, precio, esActivo, fechaActivo
+                            stock, idProducto, nombre, precio, esActivo, fechaActivo, imagen
                     );
                     personList.add(cl);
                 }

@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 public class RealizarVenta extends AppCompatActivity {
 
     //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
-    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
+    private static final String URL = "https://dbventas-facturas-movil.somee.com/api/";
 
     private TextView nombre,
             direccion,
@@ -44,7 +45,7 @@ public class RealizarVenta extends AppCompatActivity {
             fecha,
             numVenta;
 
-    private Button cancelar, comprar;
+    private Button cancelar, comprar, seguirComprando;
     private TableLayout tablaProductos;
     private Cliente usuario;
     private Intent intentRealizarVenta;
@@ -72,6 +73,7 @@ public class RealizarVenta extends AppCompatActivity {
         cancelar = findViewById(R.id.buttonCancelarCompra);
         comprar = findViewById(R.id.buttonCrearCompra);
         tablaProductos = findViewById(R.id.tableLayoutProductos);
+        seguirComprando = findViewById(R.id.buttonRegresar);
 
         habilitarMenu();
 
@@ -149,6 +151,14 @@ public class RealizarVenta extends AppCompatActivity {
                 public void onClick(View v) {
                     cancelarCompra();
                 }
+
+            });
+
+            seguirComprando.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    seguirComprando();
+                }
             });
 
             comprar.setOnClickListener(new View.OnClickListener() {
@@ -199,12 +209,7 @@ public class RealizarVenta extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RealizarVenta.this, Ventas.class);
-                intent.putExtra("codCliente", Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
-                intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
-                intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
-                startActivity(intent);
-                RealizarVenta.this.finish();
+                cancelarCompra();
             }
         });
 
@@ -224,10 +229,21 @@ public class RealizarVenta extends AppCompatActivity {
                 intent.putExtra("codCliente", Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
                 intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
                 intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
+                intent.putExtra("subtotal",intentRealizarVenta.getExtras().get("subtotal").toString());
                 startActivity(intent);
                 RealizarVenta.this.finish();
             }
         });
+    }
+
+    public void seguirComprando(){
+        Intent intent = new Intent(this, CarritoCompras.class);
+        intent.putExtra("codCliente", Integer.parseInt(intentRealizarVenta.getExtras().get("codCliente").toString()));
+        intent.putExtra("nombre", intentRealizarVenta.getExtras().get("nombre").toString());
+        intent.putExtra("carrito",carrito);
+        intent.putExtra("rol", intentRealizarVenta.getExtras().get("rol").toString());
+        intent.putExtra("subtotal",intentRealizarVenta.getExtras().get("subtotal").toString());
+        startActivity(intent);
     }
 
     public void traerFactura(int verificador){
@@ -313,6 +329,7 @@ public class RealizarVenta extends AppCompatActivity {
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
+
     public Cliente traerCliente(int codigo){
         Cliente res;
         try {

@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 public class Productos extends AppCompatActivity {
 
 //    private static final String url = "https://www.sistemaventasepe.somee.com/api/";
-    private static final String url = "http://dbventas-facturas-movil.somee.com/api/";
+    private static final String url = "https://dbventas-facturas-movil.somee.com/api/";
 
     // https://localhost:7009/api/Productos
     private TableLayout tablaProductos;
@@ -179,6 +179,7 @@ public class Productos extends AppCompatActivity {
     public List<Producto> llenarDatos(){
         List<Producto> resp;
         try {
+            intentProductos.getExtras().get("rol").toString();
             if (intentProductos.getExtras().get("rol").toString().equals("admin")) {
                 resp = new ApiHandler.GetProductosTask().execute(url + "Productos").get();
                 return resp;

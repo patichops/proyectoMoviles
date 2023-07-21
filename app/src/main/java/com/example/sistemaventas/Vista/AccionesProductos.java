@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class AccionesProductos extends AppCompatActivity {
 
     //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
-    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
+    private static final String URL = "https://dbventas-facturas-movil.somee.com/api/";
     private Intent intentAcciones;
     private Producto productoSel;
     private TextView fecha, nombre;
@@ -41,7 +41,6 @@ public class AccionesProductos extends AppCompatActivity {
         verificarUsuario(this, intentAcciones);
 
         codigo = findViewById(R.id.editTextCodigo);
-        //fecha = findViewById(R.id.textViewFecha);
         nombre = findViewById(R.id.editTextNombreProducto);
         precio = findViewById(R.id.editTextPrecio);
         cantidad = findViewById(R.id.editTextStock);
@@ -71,7 +70,6 @@ public class AccionesProductos extends AppCompatActivity {
         } else {
 
             codigo.setText("0");
-            fecha.setText("");
             nombre.setText("");
             precio.setText("");
             cantidad.setText("");
@@ -118,9 +116,10 @@ public class AccionesProductos extends AppCompatActivity {
         double precio = Double.parseDouble(this.precio.getText().toString());
         boolean esActivo = this.activo.isChecked();
         String fechaActivo = "";
+        String imagen = "";
 
         Producto cl = new Producto(
-                stock, idProducto, nombre, precio, esActivo, fechaActivo);
+                stock, idProducto, nombre, precio, esActivo, fechaActivo, imagen);
 
         try {
             JSONObject json = new JSONObject();
@@ -159,9 +158,10 @@ public class AccionesProductos extends AppCompatActivity {
         double precio = Double.parseDouble(this.precio.getText().toString());
         boolean esActivo = this.activo.isChecked();
         String fechaActivo = this.fecha.getText().toString();
+        String url = "";
 
         Producto cl = new Producto(
-                stock, idProducto, nombre, precio, esActivo, fechaActivo);
+                stock, idProducto, nombre, precio, esActivo, fechaActivo, url);
 
         try {
             JSONObject json = new JSONObject();

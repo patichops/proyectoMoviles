@@ -23,7 +23,6 @@ public class ValidadorCampos {
     }
 
 
-    //180426250-7
     public static boolean validarCedula(String cedula) {
         boolean cedulaCorrecta = false;
         try {

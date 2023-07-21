@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.sistemaventas.Modelo.Entidades.Producto;
 import com.example.sistemaventas.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Random;
@@ -57,44 +58,45 @@ public class GridAdapter extends BaseAdapter {
         TextView textView4 = convertView.findViewById(R.id.productoCodigo);
 
 //        AGREGAR DESDE EL BACK
-//        if (productos.get(position).imagen.length() == 0){
-//            imageView.setImageResource(android.R.drawable.ic_menu_camera);
-//        } else {
-//            Uri uri = Uri.parse(productos.get(position).imagen);
-//            imageView.setImageURI(uri);
-//        }
-
-        Random r = new Random();
-        int numAleatorio = r.nextInt(9);
-        switch (numAleatorio){
-            case 0:
-                imageView.setImageResource(android.R.drawable.ic_menu_camera);
-                break;
-            case 1:
-                imageView.setImageResource(R.drawable.board);
-                break;
-            case 2:
-                imageView.setImageResource(R.drawable.ic_menu_slideshow);
-                break;
-            case 3:
-                imageView.setImageResource(R.drawable.m2);
-                break;
-            case 4:
-                imageView.setImageResource(R.drawable.peo);
-                break;
-            case 5:
-                imageView.setImageResource(R.drawable.q12);
-                break;
-            case 6:
-                imageView.setImageResource(R.drawable.qwa);
-                break;
-            case 7:
-                imageView.setImageResource(R.drawable.sd);
-                break;
-            case 8:
-                imageView.setImageResource(R.drawable.edicion);
-                break;
+        if (productos.get(position).imagen.length() == 0
+                || productos.get(position).imagen == null
+                || !productos.get(position).imagen.contains("http")){
+            imageView.setImageResource(android.R.drawable.ic_menu_gallery);
+        } else {
+            Picasso.get().load(productos.get(position).imagen).into(imageView);
         }
+
+//        Random r = new Random();
+//        int numAleatorio = r.nextInt(9);
+//        switch (numAleatorio){
+//            case 0:
+//                imageView.setImageResource(android.R.drawable.ic_menu_camera);
+//                break;
+//            case 1:
+//                imageView.setImageResource(R.drawable.board);
+//                break;
+//            case 2:
+//                imageView.setImageResource(R.drawable.ic_menu_slideshow);
+//                break;
+//            case 3:
+//                imageView.setImageResource(R.drawable.m2);
+//                break;
+//            case 4:
+//                imageView.setImageResource(R.drawable.peo);
+//                break;
+//            case 5:
+//                imageView.setImageResource(R.drawable.q12);
+//                break;
+//            case 6:
+//                imageView.setImageResource(R.drawable.qwa);
+//                break;
+//            case 7:
+//                imageView.setImageResource(R.drawable.sd);
+//                break;
+//            case 8:
+//                imageView.setImageResource(R.drawable.edicion);
+//                break;
+//        }
 
         textView1.setText(productos.get(position).nombre);
         textView2.setText(String.valueOf(productos.get(position).stock));

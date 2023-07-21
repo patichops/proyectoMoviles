@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 
 public class AccionesCliente extends AppCompatActivity {
 
-    private static final String URL = "http://dbventas-facturas-movil.somee.com/api/";
+    private static final String URL = "https://dbventas-facturas-movil.somee.com/api/";
     //private static final String URL = "https://www.sistemaventasepe.somee.com/api/";
 
     private Cliente usuario;
@@ -254,12 +254,12 @@ public class AccionesCliente extends AppCompatActivity {
         else if(editCedula.getText().toString().isEmpty()
                 || editCedula.getText().toString().length() != 10
                 || !ValidadorCampos.validarCedula(editCedula.getText().toString())){
-            Toast.makeText(this,"Cedula valida",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Cedula invalida",Toast.LENGTH_SHORT).show();
             return true;
         }
-        else if(correo.getText().toString().isEmpty() &&
-                !ValidadorCampos.validarCorreoElectronico(correo.getText().toString())){
-            Toast.makeText(this,"Correo no valida",Toast.LENGTH_SHORT).show();
+        else if(correo.getText().toString().isEmpty()
+                || !ValidadorCampos.validarCorreoElectronico(correo.getText().toString())){
+            Toast.makeText(this,"Correo no valido",Toast.LENGTH_SHORT).show();
             return true;
         }
         else if(direccion.getText().toString().isEmpty()){

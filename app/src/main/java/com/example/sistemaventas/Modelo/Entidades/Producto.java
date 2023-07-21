@@ -13,12 +13,14 @@ public class Producto {
     public Producto(){}
     public Producto(int stock, int idProducto,
                     String nombre, double precio,
-                    boolean esActivo, String fechaActivo) {
+                    boolean esActivo, String fechaActivo,
+                    String imagen) {
         this.stock = stock;
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.precio = precio;
         this.esActivo = esActivo;
         this.fechaActivo = fechaActivo;
+        this.imagen = imagen;
     }
 }
